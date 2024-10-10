@@ -60,7 +60,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
       <div className="max-w-md w-full p-5 border border-gray-300 rounded-md shadow-md bg-purple-200">
         <h2 className="text-2xl font-bold text-center mb-5">EventFinder Registration</h2>
         <form onSubmit={handleSubmit}>
