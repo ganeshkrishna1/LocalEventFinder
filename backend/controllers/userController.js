@@ -10,26 +10,16 @@ const generateToken = (id) => {
   });
 };
 
-// Register a new user with hashed password (no token generated here)
+// Register a new user
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
+    if (userExists) return res.status(400).json({ message: 'User already exists' });
 
-    if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
-
-    // Hash the password before saving
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-    });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({ name, email, password: hashedPassword });
 
     res.status(201).json({
       _id: user._id,
@@ -41,40 +31,67 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// Login user and return a JWT token
+// Login user
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
-
-    if (!user) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Check if password matches
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
-
-    // Generate JWT token after successful login
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id), // Token created here only after login
+      token: generateToken(user._id),
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-// Get all users (protected route)
+// Get all users
 export const getUsers = async (req, res) => {
   try {
     const users = await User.find({});
     res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Update user by ID (Admin)
+export const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { name, email, isAdmin } = req.body;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    user.name = name || user.name;
+    user.email = email || user.email;
+    user.isAdmin = isAdmin !== undefined ? isAdmin : user.isAdmin;
+
+    await user.save();
+    res.json({ message: 'User updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Delete user by ID (Admin)
+export const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    await user.remove();
+    res.json({ message: 'User deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }

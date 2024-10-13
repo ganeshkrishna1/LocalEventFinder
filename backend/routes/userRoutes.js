@@ -1,16 +1,14 @@
-// routes/userRoutes.js
 import express from 'express';
-import { registerUser, loginUser, getUsers } from '../controllers/userController.js';
+import { registerUser, loginUser, getUsers, updateUser, deleteUser } from '../controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
+import { admin } from '../middleware/adminMiddleware.js';
 
 const router = express.Router();
 
 router.post('/register', registerUser);
-
-// Login user and get a JWT token
 router.post('/login', loginUser);
-
-// Get all users (protected route)
-router.get('/', protect, getUsers);
+router.get('/', protect, admin, getUsers); // Only admin can get all users
+router.put('/:id', protect, admin, updateUser); // Admin can update a user
+router.delete('/:id', protect, admin, deleteUser); // Admin can delete a user
 
 export default router;

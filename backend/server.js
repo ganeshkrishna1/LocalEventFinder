@@ -3,6 +3,10 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import userRoutes from './routes/userRoutes.js';
+import eventRoutes from './routes/eventRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 // Load environment variables
@@ -20,6 +24,10 @@ app.use(express.json()); // For parsing JSON requests
 
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Error Handler Middleware
 app.use(errorHandler);
