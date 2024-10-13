@@ -12,7 +12,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-lg">
+    <nav className="bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           
@@ -26,7 +26,7 @@ const Navbar = () => {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                isActive ? "text-blue-500" : "text-gray-800 hover:text-gray-600"
+                isActive ? "text-orange-500 font-bold" : "text-gray-800 hover:text-gray-600"
               }
               onClick={handleNavLinkClick}
             >
@@ -35,20 +35,20 @@ const Navbar = () => {
             <NavLink
               to="/about"
               className={({ isActive }) =>
-                isActive ? "text-blue-500" : "text-gray-800 hover:text-gray-600"
+                isActive ? "text-orange-500 font-bold" : "text-gray-800 hover:text-gray-600"
               }
               onClick={handleNavLinkClick}
             >
               About Us
             </NavLink>
             <NavLink
-              to="/contactUs"
+              to="/frequently-asked-questions"
               className={({ isActive }) =>
-                isActive ? "text-blue-500" : "text-gray-800 hover:text-gray-600"
+                isActive ? "text-orange-500 font-bold" : "text-gray-800 hover:text-gray-600"
               }
               onClick={handleNavLinkClick}
             >
-              Contact Us
+              FAQ's
             </NavLink>
           </div>
 
@@ -57,7 +57,7 @@ const Navbar = () => {
               to="/signin"
               className={({ isActive }) =>
                 isActive
-                  ? "border border-blue-500 text-blue-500 px-4 py-2 rounded"
+                  ? "border border-orange-500 text-orange-500 px-4 py-2 rounded font-bold"
                   : "border border-black text-black px-4 py-2 rounded hover:bg-black hover:text-white transition"
               }
               onClick={handleNavLinkClick}
@@ -68,7 +68,7 @@ const Navbar = () => {
               to="/signup"
               className={({ isActive }) =>
                 isActive
-                  ? "border border-blue-500 text-blue-500 px-4 py-2 rounded"
+                  ? "border border-orange-500 text-orange-500 px-4 py-2 rounded font-bold"
                   : "border border-black text-black px-4 py-2 rounded hover:bg-black hover:text-white transition"
               }
               onClick={handleNavLinkClick}
