@@ -8,6 +8,7 @@ const eventSchema = new mongoose.Schema({
   date: { type: Date, required: true },
   price: { type: Number, required: true },
   category: { type: String, required: true },
+  imageUrl: {type: String, required: true},
   admin: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 

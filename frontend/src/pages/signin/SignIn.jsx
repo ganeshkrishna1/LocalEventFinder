@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom'; 
+import { loginUser } from '../../services/UserService';
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -36,13 +37,21 @@ const SignIn = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit =async (e) => {
     e.preventDefault();
     const validationErrors = validate();
 
     if (Object.keys(validationErrors).length === 0) {
       console.log('Form data:', formData);
-      // Here you would typically send a request to your backend API to sign in the user
+      // sending a request to your backend API to sign in the user
+      try{
+        const data = await loginUser(formData);
+        console.log(data);
+        // here i need to store the user details in the local storage
+        // then navigate to user or admin dashboard based on the role
+      }catch(err){
+        console.log(err);
+      }
       // Reset form
       setFormData({
         email: '',

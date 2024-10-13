@@ -6,11 +6,14 @@ import SignIn from './pages/signin/SignIn'
 import HeroSection from './components/home/HeroSection'
 import AboutUs from './components/aboutus/AboutUs'
 import FAQ from './components/FAQ/FAQ'
+import EventForm from './components/event/EventForm'
+import EventScreen from './pages/event/EventScreen'
 
 function App() {
 
   return (
     <>
+    <EventScreen/>
       <Navbar />
       <Routes>
         <Route path='/' element={<HeroSection />} />

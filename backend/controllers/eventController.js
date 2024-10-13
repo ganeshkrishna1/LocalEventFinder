@@ -3,7 +3,7 @@ import Event from '../models/Event.js';
 
 // Create a new event
 export const createEvent = async (req, res) => {
-  const { title, description, location, date, price, category } = req.body;
+  const { title, description, location, date, price, category,imageUrl,userId } = req.body;
 
   try {
     const event = new Event({
@@ -13,7 +13,8 @@ export const createEvent = async (req, res) => {
       date,
       price,
       category,
-      admin: req.user._id,
+      imageUrl,
+      admin: userId, // changed req.user._id to userId
     });
 
     const createdEvent = await event.save();
@@ -36,7 +37,7 @@ export const getEvents = async (req, res) => {
 // Update event by ID (Admin)
 export const updateEvent = async (req, res) => {
   const { id } = req.params;
-  const { title, description, location, date, price, category } = req.body;
+  const { title, description, location, date, price, category,admin } = req.body;
 
   try {
     const event = await Event.findById(id);
@@ -48,7 +49,7 @@ export const updateEvent = async (req, res) => {
     event.date = date || event.date;
     event.price = price || event.price;
     event.category = category || event.category;
-
+    event.admin = admin || event.admin
     await event.save();
     res.json({ message: 'Event updated successfully' });
   } catch (error) {

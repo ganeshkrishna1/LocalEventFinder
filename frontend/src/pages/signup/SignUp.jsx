@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom'; 
+import { NavLink, useNavigate } from 'react-router-dom'; 
+import { registerUser } from '../../services/UserService';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,8 @@ const SignUp = () => {
     password: '',
   });
   
+  const navigate = useNavigate();
+
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -41,13 +44,21 @@ const SignUp = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
 
     if (Object.keys(validationErrors).length === 0) {
       console.log('Form data:', formData);
-      // Here you would typically send a request to your backend API to register the user
+      // sending a request to your backend API to register the user
+      try{
+        const data = await registerUser(formData);
+        console.log(data);
+        navigate('/signin');
+      }catch(err) {
+        console.log(err);
+      }
+      
       // Reset form
       setFormData({
         name: '',
