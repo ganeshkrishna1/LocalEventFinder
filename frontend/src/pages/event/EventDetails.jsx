@@ -1,42 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios'; // Import Axios for API requests
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Loading from '../../components/loading/Loading';
 
 function EventDetail() {
   const { eventId } = useParams();
   const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch event data by ID from the backend
     const fetchEvent = async () => {
-      try {
-        setLoading(true); // Start loading
-        const response = await axios.get(`http://localhost:5000/api/events/${eventId}`); // Adjust the API URL based on your setup
-        setEvent(response.data); // Set the event data
-      } catch (err) {
-        setError('Failed to fetch event details');
-      } finally {
-        setLoading(false); // End loading
-      }
+      const response = await axios.get(`http://localhost:5000/api/events/${eventId}`);
+      setEvent(response.data);
     };
-
     fetchEvent();
   }, [eventId]);
 
-  if (loading) {
-    return <Loading />;
-  }
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
-
   if (!event) {
-    return <div>No event found.</div>;
+    return <div><Loading /></div>;
   }
+
+  const handleBookNow = () => {
+    navigate(`/booking-summary/${eventId}`); // Redirect to Booking Summary
+  };
 
   return (
     <div className='bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300'>
@@ -54,9 +40,12 @@ function EventDetail() {
 
         {/* Book Now Button */}
         <div className="bottom-4 left-4 right-4">
-          <a href="#" className="block w-full bg-blue-700 text-white text-center py-3 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+          <button
+            onClick={handleBookNow}
+            className="block w-full bg-blue-700 text-white text-center py-3 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
+          >
             Book Now
-          </a>
+          </button>
         </div>
       </div>
     </div>

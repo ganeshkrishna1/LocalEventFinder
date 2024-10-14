@@ -1,56 +1,72 @@
 // controllers/bookingController.js
 import Booking from '../models/Booking.js';
+import Event from '../models/Event.js';
 
-// Book tickets for an event
-export const bookEvent = async (req, res) => {
-  const { event, numberOfTickets, totalAmount } = req.body;
+// Create a new booking
+export const createBooking = async (req, res) => {
+  const { event, user, totalAmount, numberOfTickets } = req.body; // Extract required fields from the request body
 
   try {
+    // Validate if the event exists
+    const eventExists = await Event.findById(event);
+    if (!eventExists) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    // Check if the user already has a booking for this event
+    const existingBooking = await Booking.findOne({ event: eventExists._id, user: user });
+    if (existingBooking) {
+      return res.status(400).json({ message: 'User is already registered for this event.' });
+    }
+
+    // Create the booking with user ID, event ID, and other details
     const booking = new Booking({
-      event,
-      user: req.user._id, // User ID from JWT
-      numberOfTickets,
+      event: eventExists._id,
+      user: user, // Use the user ID passed in the request
       totalAmount,
-      isPaid: false,
+      numberOfTickets,
+      paymentStatus: 'Pending', // Default to 'Pending'
     });
 
     const createdBooking = await booking.save();
-    res.status(201).json(createdBooking);
+    res.status(201).json(createdBooking); // Respond with the created booking
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error(error); // Log the error for debugging
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-
 // Get all bookings (Admin only)
-export const getBookings = async (req, res) => {
+export const getAllBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find({}).populate('event user');
-    res.json(bookings);
+    const bookings = await Booking.find({})
+      .populate('event') // Populate event details
+      .populate('user'); // Populate user details
+
+    res.json(bookings); // Return all bookings
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-// Update booking status (Admin)
+// Update booking status (Admin only)
 export const updateBooking = async (req, res) => {
   const { id } = req.params;
-  const { isPaid, paymentDate } = req.body;
+  const { paymentStatus } = req.body;
 
   try {
     const booking = await Booking.findById(id);
     if (!booking) return res.status(404).json({ message: 'Booking not found' });
 
-    booking.isPaid = isPaid;
-    booking.paymentDate = isPaid ? paymentDate : null;
+    booking.paymentStatus = paymentStatus || booking.paymentStatus; // Update the payment status
+    await booking.save(); // Save the updated booking
 
-    await booking.save();
     res.json({ message: 'Booking updated successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-// Delete booking by ID (Admin)
+// Delete booking by ID (Admin only)
 export const deleteBooking = async (req, res) => {
   const { id } = req.params;
 
@@ -58,9 +74,29 @@ export const deleteBooking = async (req, res) => {
     const booking = await Booking.findById(id);
     if (!booking) return res.status(404).json({ message: 'Booking not found' });
 
-    await booking.remove();
+    await booking.remove(); // Remove the booking
     res.json({ message: 'Booking deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+
+// Update booking status
+export const updateBookingStatus = async (req, res) => {
+  const { id } = req.params;
+  const { paymentStatus } = req.body; // Get the new payment status
+
+  try {
+    const booking = await Booking.findById(id);
+    if (!booking) return res.status(404).json({ message: 'Booking not found' });
+
+    booking.paymentStatus = paymentStatus || booking.paymentStatus; // Update the payment status
+    await booking.save(); // Save the updated booking
+
+    res.json({ message: 'Booking updated successfully', booking }); // Return the updated booking
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

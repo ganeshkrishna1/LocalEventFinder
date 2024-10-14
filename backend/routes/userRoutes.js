@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
-router.get('/', protect, admin, getUsers); // Only admin can get all users
+router.get('/', getUsers); 
 router.put('/:id', protect, admin, updateUser); // Admin can update a user
 router.delete('/:id', protect, admin, deleteUser); // Admin can delete a user
 
