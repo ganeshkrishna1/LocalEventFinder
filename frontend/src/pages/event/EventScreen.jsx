@@ -22,6 +22,7 @@ const mockEvents = [
     location: 'Staples Center, LA',
     availableTickets: 200,
     price: 35,
+    imgSource:"https://www.shutterstock.com/image-vector/sample-red-square-grunge-stamp-260nw-338250266.jpg"
   },
   {
     _id: '3',
@@ -71,7 +72,6 @@ const EventScreen = () => {
   const [filterCategory, setFilterCategory] = useState('');  // Current filter
 
   useEffect(() => {
-    // Use mock data instead of fetching from an API
     setEvents(mockEvents);
     setFilteredEvents(mockEvents);  // Initially set filtered to all events
   }, []);
@@ -90,7 +90,7 @@ const EventScreen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10">
+    <div className="min-h-screen bg-gray-100 py-10 bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
       <div className="container mx-auto">
         {/* Filter Dropdown */}
         <div className="flex justify-center mb-8">
