@@ -9,7 +9,7 @@ import FAQ from './components/FAQ/FAQ';
 import EventForm from './components/event/EventForm';
 import EventScreen from './pages/event/EventScreen';
 import EventDetail from './pages/event/EventDetails';
-import { MyEvents } from './pages/my-events/MyEvents';
+import  MyEvents  from './pages/my-events/MyEvents';
 import ProtectedRoute from './components/ProtectedRoute';
 import PaymentPage from './pages/booking/PaymentPage';
 
