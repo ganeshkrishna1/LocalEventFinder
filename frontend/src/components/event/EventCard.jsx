@@ -12,9 +12,13 @@ const EventCard = ({ event, onDelete }) => {
     navigate(`/editEvent/${event._id}`); // Navigate to edit page
   };
 
+  const handleViewEvent = () =>{
+    navigate(`/event/${event._id}`);
+  }
+
   return (
     <div
-      className="max-w-sm mx-auto bg-white border border-gray-300 rounded-lg shadow overflow-hidden flex flex-col h-[500px]"
+      className="max-w-sm mx-auto bg-white border border-gray-300 rounded-lg shadow overflow-hidden flex flex-col h-full"
       style={{ backgroundColor: "#f3f4f6" }}
     >
       <img
@@ -40,22 +44,13 @@ const EventCard = ({ event, onDelete }) => {
           <strong>Description:</strong> {event.description || "No description available"}
         </p>
         <p className="mb-3 font-normal text-gray-800">
-          <strong>Date:</strong> {new Date(event.date).toLocaleDateString()}
-        </p>
-        <p className="mb-3 font-normal text-gray-800">
-          <strong>Location:</strong> {event.location}
-        </p>
-        {/* <p className="mb-3 font-normal text-gray-800">
-          <strong>Tickets Available:</strong> {event.availableTickets}
-        </p> */}
-        <p className="mb-3 font-normal text-gray-800">
           <strong>Price:</strong> ${event.price}
         </p>
       </div>
 
       {/* Admin Controls */}
-      {user && user.isAdmin && (
-        <div className="flex justify-end gap-4 items-center">
+      {user && user.isAdmin ? (
+        <div className="flex justify-end gap-4 items-center p-4">
           <FaRegEdit 
             className="text-5xl text-orange-500 p-2 cursor-pointer"
             onClick={handleEditEvent}
@@ -64,6 +59,15 @@ const EventCard = ({ event, onDelete }) => {
             className="text-5xl text-red-700 p-2 cursor-pointer"
             onClick={() => onDelete(event._id)} // Use the delete handler passed from EventScreen
           />
+        </div>
+      ) : (
+        <div className="bottom-4 left-4 right-4 p-4">
+          <button
+          onClick={handleViewEvent}
+            className="block w-full bg-blue-700 text-white text-center py-3 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
+          >
+            View
+          </button>
         </div>
       )}
     </div>
