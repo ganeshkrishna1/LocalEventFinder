@@ -23,6 +23,22 @@ export const createEvent = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+// Get event by ID
+export const getEventById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const event = await Event.findById(id);
+
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    res.json(event);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 // Get all events
 export const getEvents = async (req, res) => {
