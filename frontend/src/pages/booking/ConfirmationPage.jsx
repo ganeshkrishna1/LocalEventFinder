@@ -17,7 +17,7 @@ const ConfirmationPage = () => {
           <p className="text-gray-600"><strong>Booking ID:</strong> {bookingId}</p>
           <p className="text-gray-600"><strong>Name:</strong> {user?.name}</p>
           <p className="text-gray-600"><strong>Email:</strong> {user?.email}</p>
-          {/* Add more details as needed, e.g., event title, date, location */}
+          {/* Add more details as needed */}
         </div>
 
         <div className="mt-6">
