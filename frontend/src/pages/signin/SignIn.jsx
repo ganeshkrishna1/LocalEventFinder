@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom'; 
+import { NavLink, useNavigate } from 'react-router-dom'; 
 import { loginUser } from '../../services/UserService';
 
 const SignIn = () => {
@@ -9,6 +9,7 @@ const SignIn = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,21 +38,29 @@ const SignIn = () => {
     return newErrors;
   };
 
-  const handleSubmit =async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
 
     if (Object.keys(validationErrors).length === 0) {
-      console.log('Form data:', formData);
-      // sending a request to your backend API to sign in the user
-      try{
+      try {
         const data = await loginUser(formData);
-        console.log(data);
-        // here i need to store the user details in the local storage
-        // then navigate to user or admin dashboard based on the role
-      }catch(err){
+        // Storing user data in localStorage, including the isAdmin field
+        localStorage.setItem('user', JSON.stringify(data));
+
+        // Redirect based on user role
+        if (data.isAdmin) {
+          navigate('/admin-dashboard');
+          window.location.reload();
+        } else {
+          navigate('/');  // Or another user-specific route
+          window.location.reload();
+        }
+
+      } catch (err) {
         console.log(err);
       }
+
       // Reset form
       setFormData({
         email: '',

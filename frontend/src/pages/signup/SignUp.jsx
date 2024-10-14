@@ -49,11 +49,10 @@ const SignUp = () => {
     const validationErrors = validate();
 
     if (Object.keys(validationErrors).length === 0) {
-      console.log('Form data:', formData);
+      console.log('Success');
       // sending a request to your backend API to register the user
       try{
         const data = await registerUser(formData);
-        console.log(data);
         navigate('/signin');
       }catch(err) {
         console.log(err);
