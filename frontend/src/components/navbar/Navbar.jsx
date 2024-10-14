@@ -1,31 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom'; 
 import { CiMenuFries } from 'react-icons/ci'; 
 import { ImCancelCircle } from 'react-icons/im';
+import { UserContext } from '../../contexts/UserContext';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [user, setUser] = useState(null); // State to store user info
+  // const [user, setUser] = useState(null); // State to store user info
+  const {user,setUser,logout} = useContext(UserContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Fetch user from localStorage if available
-    const loggedInUser = JSON.parse(localStorage.getItem('user'));
-    if (loggedInUser) {
-      setUser(loggedInUser);
-    }
-  }, []);
+  // useEffect(() => {
+  //   // Fetch user from localStorage if available
+  //   const loggedInUser = JSON.parse(localStorage.getItem('user'));
+  //   if (loggedInUser) {
+  //     setUser(loggedInUser);
+  //   }
+  // }, []);
 
   const handleNavLinkClick = () => {
     setMenuOpen(false); 
   };
 
-  const handleLogout = () => {
-    // Clear user data from localStorage and state
-    localStorage.removeItem('user');
-    setUser(null);
-    navigate('/signin'); // Redirect to sign-in page after logout
-  };
+  // const handleLogout = () => {
+  //   // Clear user data from localStorage and state
+  //   localStorage.removeItem('user');
+  //   setUser(null);
+  //   navigate('/signin'); // Redirect to sign-in page after logout
+  // };
 
   return (
     <nav className="bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
@@ -102,7 +104,7 @@ const Navbar = () => {
             {/* Show Logout if user is logged in */}
             {user ? (
               <button
-                onClick={handleLogout}
+                onClick={logout}
                 className="text-gray-800 hover:text-gray-600"
               >
                 Logout

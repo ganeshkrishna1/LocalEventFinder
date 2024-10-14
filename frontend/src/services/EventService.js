@@ -1,15 +1,22 @@
+import { useContext } from "react";
 import { axiosInstance } from "./BaseUrl";
 
-const yourToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MGJlYTFjNmIwOWIwMTQ1NjlhYzkyNSIsImlhdCI6MTcyODgzNDM0MiwiZXhwIjoxNzMxNDI2MzQyfQ.cgQNlGxC4eiIZx7RlW1PIS8KXhs6Qby0GSA_eY4twqo'
+const user = JSON.parse(localStorage.getItem('user'));
 
-const config = {
+let yourToken;
+if(user){
+  yourToken = user.token;
+}
+
+export const config = {
     headers: {
       Authorization: `Bearer ${yourToken}`
     }
   };
 
 export const postEvent = async (eventData) =>{
-    const res = await axiosInstance.post('/events/',eventData,config);
+  console.log(config,eventData)
+    const res = await axiosInstance.post('/events',eventData,config);
     return res.data;
 }
 

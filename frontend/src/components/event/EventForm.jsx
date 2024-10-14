@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { postEvent } from '../../services/EventService';
+import { useNavigate } from 'react-router-dom';
 
 const EventForm = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const EventForm = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,20 +34,15 @@ const EventForm = () => {
     return Object.keys(formErrors).length === 0;
   };
 
-  const idUser = '670bd7d35ed4ed7652ab8ff0'; // here i need to get the userId from localStorage
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-        // adding userId to formData
-        setFormData((prevData)=>({
-            ...prevData,
-            userId: idUser
-        }));
         console.log('Form submitted successfully:', formData); // displaying toast messages for successful creation
       // Submit form data to the backend (API call)
       try{
         const data = await postEvent(formData);
+        navigate('/events');
         console.log(data);
         
       }catch(err){
@@ -129,14 +126,17 @@ const EventForm = () => {
         {/* Category */}
         <div className="mb-4">
           <label className="block text-black">Category</label>
-          <input
-            type="text"
+          <select
             name="category"
             value={formData.category}
             onChange={handleInputChange}
             className={`w-full p-3 border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none`}
-            placeholder="Enter event category (e.g., Concert, Sports)"
-          />
+          >
+            <option value="" disabled>Select Category</option>
+            <option value="concert">Concert</option>
+            <option value="sport">Sport</option>
+            <option value="workshop">Workshop</option>
+          </select>
           {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
         </div>
 

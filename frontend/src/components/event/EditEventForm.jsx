@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useParams, useHistory } from 'react-router-dom';
-import { admin } from '../../../../backend/middleware/adminMiddleware';
+import { useParams, useNavigate } from 'react-router-dom';
+import { axiosInstance } from '../../services/BaseUrl';
+import { config } from '../../services/EventService';
 
 const EditEventForm = () => {
   const { id } = useParams(); // Get the event ID from the URL
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     location: '',
-    date: '',
+    date: '', // Initially empty; will be set correctly after fetching
     price: '',
     category: '',
     imageUrl: '',
-    admin:''
   });
 
   const [errors, setErrors] = useState({});
@@ -23,10 +23,16 @@ const EditEventForm = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const data = await getEventById(id);
-        setFormData(data); // Populate the form with event data
+        const res = await axiosInstance.get(`/events/${id}`, config);
+        
+        // Set form data, ensure date is formatted correctly
+        const eventData = res.data;
+        setFormData({
+          ...eventData,
+          date: new Date(eventData.date).toISOString().split('T')[0], // Format date to YYYY-MM-DD
+        });
       } catch (error) {
-        console.error("Error fetching event data:", error);
+        console.error('Error fetching event data:', error);
       }
     };
 
@@ -59,11 +65,11 @@ const EditEventForm = () => {
     if (validateForm()) {
       try {
         // Update event via API
-        await axios.put(`/api/events/${id}`, formData);
+        await axiosInstance.put(`/events/${id}`, formData, config);
         console.log('Event updated successfully:', formData);
-        history.push('/events'); // Redirect to the events page after successful update
+        navigate('/events'); // Redirect to the events page after successful update
       } catch (error) {
-        console.error("Error updating event:", error);
+        console.error('Error updating event:', error);
       }
     }
   };
@@ -143,14 +149,17 @@ const EditEventForm = () => {
         {/* Category */}
         <div className="mb-4">
           <label className="block text-gray-700">Category</label>
-          <input
-            type="text"
+          <select
             name="category"
             value={formData.category}
             onChange={handleInputChange}
             className={`w-full p-3 border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none`}
-            placeholder="Enter event category (e.g., Concert, Sports)"
-          />
+          >
+            <option value="" disabled>Select Category</option>
+            <option value="concert">Concert</option>
+            <option value="sport">Sport</option>
+            <option value="workshop">Workshop</option>
+          </select>
           {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
         </div>
 

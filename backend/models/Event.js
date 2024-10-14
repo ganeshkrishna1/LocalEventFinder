@@ -11,8 +11,7 @@ const eventSchema = new mongoose.Schema({
   imageUrl: {type: String, required: true},
   admin: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true 
+    ref: 'User' 
   },
 }, {
   timestamps: true

@@ -1,10 +1,12 @@
 // contexts/UserContext.js
 import React, { createContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const UserContext = createContext(null);
 
-const UserProvider = ({ children }) => {
+export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check localStorage for user info on mount
@@ -17,6 +19,7 @@ const UserProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('user');
     setUser(null);
+    navigate('/signin'); // Redirect to sign-in page after logout
   };
 
   return (
@@ -26,4 +29,4 @@ const UserProvider = ({ children }) => {
   );
 };
 
-export default UserProvider;
+
