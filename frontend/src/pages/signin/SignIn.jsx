@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom'; 
 import { loginUser } from '../../services/UserService';
+import { UserContext } from '../../contexts/UserContext';
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -38,38 +39,73 @@ const SignIn = () => {
     return newErrors;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const validationErrors = validate();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const validationErrors = validate();
 
-    if (Object.keys(validationErrors).length === 0) {
-      try {
-        const data = await loginUser(formData);
-        // Storing user data in localStorage, including the isAdmin field
-        localStorage.setItem('user', JSON.stringify(data));
+  //   if (Object.keys(validationErrors).length === 0) {
+  //     try {
+  //       const data = await loginUser(formData);
+  //       // Storing user data in localStorage, including the isAdmin field
+  //       localStorage.setItem('user', JSON.stringify(data));
 
-        // Redirect based on user role
-        if (data.isAdmin) {
-          navigate('/admin-dashboard');
-          // window.location.reload();
-        } else {
-          navigate('/');  // Or another user-specific route
-          // window.location.reload();
-        }
+  //       // Redirect based on user role
+  //       if (data.isAdmin) {
+  //         navigate('/admin-dashboard');
+  //         // window.location.reload();
+  //       } else {
+  //         navigate('/events');  // Or another user-specific route
+  //         // window.location.reload();
+  //       }
 
-      } catch (err) {
-        console.log(err);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+
+  //     // Reset form
+  //     setFormData({
+  //       email: '',
+  //       password: '',
+  //     });
+  //   } else {
+  //     setErrors(validationErrors);
+  //   }
+  // };
+
+  const { setUser } = useContext(UserContext); // Access setUser from UserContext
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const validationErrors = validate();
+
+  if (Object.keys(validationErrors).length === 0) {
+    try {
+      const data = await loginUser(formData);
+      
+      // Set the user in the context to trigger re-render
+      setUser(data); // <-- This triggers re-render across all components using UserContext
+
+      localStorage.setItem('user', JSON.stringify(data)); // Optionally store user in localStorage
+      
+      // Redirect based on user role
+      if (data.isAdmin) {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/events');
       }
-
-      // Reset form
-      setFormData({
-        email: '',
-        password: '',
-      });
-    } else {
-      setErrors(validationErrors);
+    } catch (err) {
+      console.log(err);
     }
-  };
+
+    setFormData({
+      email: '',
+      password: '',
+    });
+  } else {
+    setErrors(validationErrors);
+  }
+};
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">

@@ -75,7 +75,7 @@ function BookingSummary() {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
+    <div className="bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300 min-h-screen p-8">
       <div className="max-w-2xl mx-auto bg-white p-6 shadow-md rounded-lg">
         {/* Event Details */}
         <h2 className="text-2xl font-bold mb-4">Booking Summary</h2>
