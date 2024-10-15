@@ -25,7 +25,7 @@ function EventDetail() {
   };
 
   return (
-    <div className='bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300'>
+    <div className='h-screen bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300 p-2'>
       <div className="max-w-2xl mx-auto p-8 bg-white shadow-md rounded-lg">
         {/* Event Image */}
         <img className="w-full h-64 object-cover rounded-md mb-6" src={event.imageUrl || "https://via.placeholder.com/400x300"} alt={event.title} />

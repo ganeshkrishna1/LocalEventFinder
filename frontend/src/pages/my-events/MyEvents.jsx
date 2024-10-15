@@ -3,123 +3,10 @@ import Loading from '../../components/loading/Loading';
 import { format, isBefore } from 'date-fns';
 import { FaStar } from 'react-icons/fa';
 import Modal from 'react-modal';
-
-const mockBookings = [
-  {
-    _id: '1',
-    event: {
-      _id: 'event1',
-      title: 'Concert in the Park',
-      description: 'Enjoy a night of classical music in the beautiful park.',
-      category: 'Music',
-      location: 'City Park',
-      date: '2024-11-20T18:00:00Z',
-      imageUrl: 'https://example.com/concert.jpg', // URL to an image
-    },
-    user: {
-      _id: 'user1',
-      name: 'John Doe',
-    },
-    totalAmount: 50,
-    paymentStatus: 'Paid',
-    numberOfTickets: 2,
-    bookingDate: '2024-10-10T10:00:00Z',
-    rating: 4,
-    comment: 'Great event, enjoyed it!',
-  },
-  {
-    _id: '2',
-    event: {
-      _id: 'event2',
-      title: 'Art Exhibition',
-      description: 'Explore the latest in modern art.',
-      category: 'Art',
-      location: 'Art Gallery',
-      date: '2024-12-15T15:00:00Z',
-      imageUrl: 'https://example.com/art-exhibition.jpg', // URL to an image
-    },
-    user: {
-      _id: 'user2',
-      name: 'Jane Smith',
-    },
-    totalAmount: 30,
-    paymentStatus: 'Paid',
-    numberOfTickets: 1,
-    bookingDate: '2024-10-12T11:00:00Z',
-    rating: null,
-    comment: '',
-  },
-  {
-    _id: '3',
-    event: {
-      _id: 'event3',
-      title: 'Tech Conference',
-      description: 'Join us for a day of talks and networking with industry leaders.',
-      category: 'Conference',
-      location: 'Convention Center',
-      date: '2025-01-05T09:00:00Z',
-      imageUrl: 'https://example.com/tech-conference.jpg', // URL to an image
-    },
-    user: {
-      _id: 'user3',
-      name: 'Alice Johnson',
-    },
-    totalAmount: 200,
-    paymentStatus: 'Pending',
-    numberOfTickets: 3,
-    bookingDate: '2024-10-13T09:00:00Z',
-    rating: null,
-    comment: '',
-  },
-  {
-    _id: '4',
-    event: {
-      _id: 'event4',
-      title: 'Cooking Workshop',
-      description: 'Learn to cook delicious Italian dishes.',
-      category: 'Workshop',
-      location: 'Culinary School',
-      date: '2024-11-10T14:00:00Z',
-      imageUrl: 'https://example.com/cooking-workshop.jpg', // URL to an image
-    },
-    user: {
-      _id: 'user1',
-      name: 'John Doe',
-    },
-    totalAmount: 75,
-    paymentStatus: 'Paid',
-    numberOfTickets: 2,
-    bookingDate: '2024-10-09T10:00:00Z',
-    rating: 5,
-    comment: 'Amazing experience!',
-  },
-  {
-    _id: '5',
-    event: {
-      _id: 'event5',
-      title: 'Movie Night',
-      description: 'Watch the latest blockbuster under the stars.',
-      category: 'Cinema',
-      location: 'Outdoor Theater',
-      date: '2024-09-25T20:00:00Z',
-      imageUrl: 'https://example.com/movie-night.jpg', // URL to an image
-    },
-    user: {
-      _id: 'user2',
-      name: 'Jane Smith',
-    },
-    totalAmount: 20,
-    paymentStatus: 'Paid',
-    numberOfTickets: 4,
-    bookingDate: '2024-10-14T12:00:00Z',
-    rating: null,
-    comment: '',
-  },
-];
-
+import axios from 'axios'; // Import axios to make API requests
 
 const MyEvents = () => {
-  const [bookings, setBookings] = useState([]);
+  const [bookings, setBookings] = useState([]); // Initialize bookings as an array
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -131,14 +18,14 @@ const MyEvents = () => {
     const fetchBookings = async () => {
       try {
         setLoading(true);
-        // Replace the mock data with your actual fetch call
-        // const response = await fetch('/api/bookings'); 
-        // const data = await response.json();
-        setBookings(mockBookings);
+        const user = JSON.parse(localStorage.getItem('user')); // Get user ID from localStorage
+        const response = await axios.get(`http://localhost:5000/api/bookings/user/${user._id}`); // Fetch bookings by user ID from API
+
+        setBookings(response.data); // Set the actual bookings data from the API response
       } catch (error) {
-        setError('Error fetching bookings');
+        setError('Error fetching bookings'); // Handle error
       } finally {
-        setLoading(false);
+        setLoading(false); // Turn off loading
       }
     };
 
@@ -183,7 +70,7 @@ const MyEvents = () => {
   };
 
   return (
-    <div className="p-4 bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
+    <div className="p-4 bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300 min-h-screen">
       <h2 className="text-2xl font-bold mb-4">My Booked Events</h2>
 
       {/* Booked Events Section */}
@@ -215,13 +102,6 @@ const MyEvents = () => {
                   </div>
                 </div>
               </div>
-
-              <button
-                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200 w-full"
-                
-              >
-                View Event
-              </button>
             </div>
           ))}
         </div>
@@ -260,11 +140,14 @@ const MyEvents = () => {
               </div>
 
               <button
-                className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                className={`mt-4 text-white px-4 py-2 rounded ${booking.rating ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'
+                  }`}
                 onClick={() => openModal(booking)}
+                disabled={!!booking.rating} // Disable the button if a review is submitted
               >
-                {booking.rating ? 'Update Review' : 'Review Event'}
+                {booking.rating ? 'Review Submitted' : 'Review Event'}
               </button>
+
             </div>
           ))}
         </div>

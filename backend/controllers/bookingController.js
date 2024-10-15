@@ -1,7 +1,7 @@
 // controllers/bookingController.js
 import Booking from '../models/Booking.js';
 import Event from '../models/Event.js';
-
+import mongoose from 'mongoose';
 // Create a new booking
 export const createBooking = async (req, res) => {
   const { event, user, totalAmount, numberOfTickets } = req.body; // Extract required fields from the request body
@@ -97,6 +97,33 @@ export const updateBookingStatus = async (req, res) => {
     res.json({ message: 'Booking updated successfully', booking }); // Return the updated booking
   } catch (error) {
     console.error(error); // Log the error for debugging
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+
+export const getUserBookings = async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    // Cast the userId to a MongoDB ObjectId manually
+    const userObjectId = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : null;
+
+    if (!userObjectId) {
+      return res.status(400).json({ message: 'Invalid userId' });
+    }
+
+    const bookings = await Booking.find({ user: userObjectId })
+      .populate('event')
+      .populate('user');
+
+    if (bookings.length === 0) {
+      return res.status(404).json({ message: 'No bookings found for this user.' });
+    }
+
+    res.json(bookings);
+  } catch (error) {
+    console.error('Error fetching bookings:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

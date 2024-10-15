@@ -70,7 +70,7 @@ function BookingSummary() {
       navigate(`/payment/${bookingResponse.data._id}?totalCost=${totalCost}`);
     } catch (error) {
       console.error(error); // Log the error for debugging
-      alert('Failed to confirm registration.');
+      alert('User Already Registered');
     }
   };
 
