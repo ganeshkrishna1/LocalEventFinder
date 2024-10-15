@@ -3,29 +3,37 @@ import Loading from '../../components/loading/Loading';
 import { format, isBefore } from 'date-fns';
 import { FaStar } from 'react-icons/fa';
 import Modal from 'react-modal';
-import axios from 'axios'; // Import axios to make API requests
+import axios from 'axios';
 
 const MyEvents = () => {
-  const [bookings, setBookings] = useState([]); // Initialize bookings as an array
+  const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [reviews, setReviews] = useState({}); // Store reviews per event
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
         setLoading(true);
-        const user = JSON.parse(localStorage.getItem('user')); // Get user ID from localStorage
-        const response = await axios.get(`http://localhost:5000/api/bookings/user/${user._id}`); // Fetch bookings by user ID from API
+        const user = JSON.parse(localStorage.getItem('user'));
+        const response = await axios.get(`http://localhost:5000/api/bookings/user/${user._id}`);
+        setBookings(response.data);
 
-        setBookings(response.data); // Set the actual bookings data from the API response
+        // Fetch reviews for each event
+        const reviewsData = {};
+        for (const booking of response.data) {
+          const reviewResponse = await axios.get(`http://localhost:5000/api/reviews/${booking.event._id}`);
+          reviewsData[booking.event._id] = reviewResponse.data; // Store the reviews for each event
+        }
+        setReviews(reviewsData);
       } catch (error) {
-        setError('Error fetching bookings'); // Handle error
+        setError('Error fetching bookings');
       } finally {
-        setLoading(false); // Turn off loading
+        setLoading(false);
       }
     };
 
@@ -59,14 +67,29 @@ const MyEvents = () => {
     setRating(rate);
   };
 
-  const submitReview = () => {
-    const updatedBookings = bookings.map((booking) =>
-      booking._id === selectedEvent._id
-        ? { ...booking, rating, comment }
-        : booking
-    );
-    setBookings(updatedBookings);
-    setModalIsOpen(false);
+  const submitReview = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+
+      // Post the review to the API
+      await axios.post('http://localhost:5000/api/reviews', {
+        user: user._id,
+        event: selectedEvent.event._id,
+        rating,
+        comment,
+      });
+
+
+      // Update the booking state (optional, for UI update)
+      const updatedBookings = bookings.map((booking) =>
+        booking._id === selectedEvent._id ? { ...booking, rating, comment } : booking
+      );
+      setBookings(updatedBookings);
+
+      setModalIsOpen(false);
+    } catch (error) {
+      console.error('Error submitting review:', error);
+    }
   };
 
   return (
@@ -79,7 +102,10 @@ const MyEvents = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {bookedEvents.map((booking) => (
-            <div key={booking._id} className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between h-full">
+            <div
+              key={booking._id}
+              className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between h-full"
+            >
               <img
                 src={booking.event.imageUrl}
                 alt={booking.event.title}
@@ -91,14 +117,26 @@ const MyEvents = () => {
 
                 <div className="flex justify-between items-center mb-4">
                   <div className="flex flex-col">
-                    <span className="text-gray-700"><strong>Category:</strong> {booking.event.category}</span>
-                    <span className="text-gray-700"><strong>Location:</strong> {booking.event.location}</span>
-                    <span className="text-gray-700"><strong>Date:</strong> {format(new Date(booking.event.date), 'PP')}</span>
+                    <span className="text-gray-700">
+                      <strong>Category:</strong> {booking.event.category}
+                    </span>
+                    <span className="text-gray-700">
+                      <strong>Location:</strong> {booking.event.location}
+                    </span>
+                    <span className="text-gray-700">
+                      <strong>Date:</strong> {format(new Date(booking.event.date), 'PP')}
+                    </span>
                   </div>
                   <div className="text-right">
-                    <span className="text-gray-700"><strong>Tickets:</strong> {booking.numberOfTickets}</span>
-                    <span className="text-gray-700 block"><strong>Total:</strong> ${booking.totalAmount}</span>
-                    <span className="text-gray-700 block"><strong>Paid:</strong> {booking.paymentStatus}</span>
+                    <span className="text-gray-700">
+                      <strong>Tickets:</strong> {booking.numberOfTickets}
+                    </span>
+                    <span className="text-gray-700 block">
+                      <strong>Total:</strong> ${booking.totalAmount}
+                    </span>
+                    <span className="text-gray-700 block">
+                      <strong>Paid:</strong> {booking.paymentStatus}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -121,11 +159,21 @@ const MyEvents = () => {
                 className="w-full h-48 object-cover rounded mb-4"
               />
               <h3 className="text-xl font-bold text-gray-900">{booking.event.title}</h3>
-              <p className="text-gray-700"><strong>Category:</strong> {booking.event.category}</p>
-              <p className="text-gray-700"><strong>Location:</strong> {booking.event.location}</p>
-              <p className="text-gray-700"><strong>Date:</strong> {format(new Date(booking.event.date), 'PP')}</p>
-              <p className="text-gray-700"><strong>Tickets Booked:</strong> {booking.numberOfTickets}</p>
-              <p className="text-gray-700"><strong>Total Amount:</strong> ${booking.totalAmount}</p>
+              <p className="text-gray-700">
+                <strong>Category:</strong> {booking.event.category}
+              </p>
+              <p className="text-gray-700">
+                <strong>Location:</strong> {booking.event.location}
+              </p>
+              <p className="text-gray-700">
+                <strong>Date:</strong> {format(new Date(booking.event.date), 'PP')}
+              </p>
+              <p className="text-gray-700">
+                <strong>Tickets Booked:</strong> {booking.numberOfTickets}
+              </p>
+              <p className="text-gray-700">
+                <strong>Total Amount:</strong> ${booking.totalAmount}
+              </p>
 
               {/* Display the star rating */}
               <div className="flex">
@@ -140,14 +188,16 @@ const MyEvents = () => {
               </div>
 
               <button
-                className={`mt-4 text-white px-4 py-2 rounded ${booking.rating ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'
-                  }`}
+                className={`mt-4 text-white px-4 py-2 rounded ${
+                  booking.rating
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-green-500 hover:bg-green-600'
+                }`}
                 onClick={() => openModal(booking)}
                 disabled={!!booking.rating} // Disable the button if a review is submitted
               >
                 {booking.rating ? 'Review Submitted' : 'Review Event'}
               </button>
-
             </div>
           ))}
         </div>
@@ -169,26 +219,23 @@ const MyEvents = () => {
               ))}
           </div>
           <textarea
-            className="w-full p-2 border rounded mb-4"
-            rows="4"
-            placeholder="Write your review..."
+            className="w-full p-2 border border-gray-300 rounded mb-4"
+            placeholder="Write your comment..."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-          />
-          <div className="flex justify-end">
-            <button
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mr-2"
-              onClick={closeModal}
-            >
-              Cancel
-            </button>
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              onClick={submitReview}
-            >
-              Submit
-            </button>
-          </div>
+          ></textarea>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            onClick={submitReview}
+          >
+            Submit Review
+          </button>
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded ml-4 hover:bg-red-600"
+            onClick={closeModal}
+          >
+            Cancel
+          </button>
         </Modal>
       )}
     </div>
