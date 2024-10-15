@@ -2,8 +2,8 @@ import React from "react";
 
 const AboutUs = () => {
   return (
-    <div className="min-h-screen	 p-6 bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300">
-      <h1 className="text-4xl font-extrabold mb-10 text-center text-white ">
+    <div className="min-h-screen	 p-6 bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
+      <h1 className="text-4xl font-extrabold mb-10 text-center text-black ">
         About Local Event Finder
       </h1>
       <div className="flex flex-col items-center justify-center">

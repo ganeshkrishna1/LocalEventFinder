@@ -12,25 +12,23 @@ const EventCard = ({ event, onDelete }) => {
     navigate(`/editEvent/${event._id}`); // Navigate to edit page
   };
 
-  const handleViewEvent = () =>{
+  const handleViewEvent = () => {
     navigate(`/event/${event._id}`);
-  }
+  };
 
   return (
-    <div
-      className="max-w-sm mx-auto bg-white border border-gray-300 rounded-lg shadow overflow-hidden flex flex-col h-full"
-      style={{ backgroundColor: "#f3f4f6" }}
-    >
-      <img
-        onClick={() => navigate(`/event/${event._id}`)}
-        className="rounded-t-lg w-full h-48 object-cover cursor-pointer"
-        src={
-          event.imageUrl
-            ? event.imageUrl
-            : "https://via.placeholder.com/400x200"
-        }
-        alt="Event Image"
-      />
+    <div className="max-w-md bg-orange-100 border border-pink-300 rounded-lg shadow overflow-hidden flex flex-col">
+      <div className="p-2">
+        <img
+          className="w-full h-52 rounded-lg shadow object-cover"
+          src={
+            event.imageUrl
+              ? event.imageUrl
+              : "https://via.placeholder.com/400x200"
+          }
+          alt="Event Image"
+        />
+      </div>
 
       {/* Card Content */}
       <div className="p-5 flex-grow overflow-hidden">
@@ -50,12 +48,12 @@ const EventCard = ({ event, onDelete }) => {
 
       {/* Admin Controls */}
       {user && user.isAdmin ? (
-        <div className="flex justify-end gap-4 items-center p-4">
-          <FaRegEdit 
+        <div className="flex justify-end gap-4 items-center p-2">
+          <FaRegEdit
             className="text-5xl text-orange-500 p-2 cursor-pointer"
             onClick={handleEditEvent}
           />
-          <MdDelete 
+          <MdDelete
             className="text-5xl text-red-700 p-2 cursor-pointer"
             onClick={() => onDelete(event._id)} // Use the delete handler passed from EventScreen
           />
@@ -63,7 +61,7 @@ const EventCard = ({ event, onDelete }) => {
       ) : (
         <div className="bottom-4 left-4 right-4 p-4">
           <button
-          onClick={handleViewEvent}
+            onClick={handleViewEvent}
             className="block w-full bg-blue-700 text-white text-center py-3 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
           >
             View

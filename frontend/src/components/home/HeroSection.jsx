@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 const HeroSection = () => {
   const navigate = useNavigate()
   return (
-    <div className="bg-cover bg-center h-screen flex items-center justify-center bg-gradient-to-r from-pink-400 via-purple-400 to-blue-500">
+    <div className="bg-cover bg-center h-screen flex items-center justify-center bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
       <div className="text-center text-white p-6 bg-opacity-70 bg-black rounded-lg shadow-lg">
         <h1 className="text-5xl font-extrabold mb-4 drop-shadow-lg">
           Discover Local Events Near You.

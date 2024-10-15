@@ -213,7 +213,7 @@ const Navbar = () => {
           {/* Logout option for mobile */}
           {user ? (
             <button
-              onClick={handleLogout}
+              onClick={logout}
               className="block text-gray-800 px-4 py-2 hover:bg-gray-200"
             >
               Logout

@@ -51,10 +51,10 @@ const SignIn = () => {
         // Redirect based on user role
         if (data.isAdmin) {
           navigate('/admin-dashboard');
-          window.location.reload();
+          // window.location.reload();
         } else {
           navigate('/');  // Or another user-specific route
-          window.location.reload();
+          // window.location.reload();
         }
 
       } catch (err) {

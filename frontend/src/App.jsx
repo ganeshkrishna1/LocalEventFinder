@@ -15,6 +15,7 @@ import PaymentPage from './pages/booking/PaymentPage';
 import BookingSummary from './pages/booking/BookingSummary';
 import ConfirmationPage from './pages/booking/ConfirmationPage';
 import EditEventForm from './components/event/EditEventForm';
+import AdminDashboard from './components/admindashboard/AdminDashboard';
 function App() {
   return (
     <>
@@ -33,6 +34,7 @@ function App() {
         <Route path="/confirmation" element={<ConfirmationPage />} />
         <Route path='/addEvent' element={<EventForm />}/>
         <Route path='/editEvent/:id' element={<EditEventForm />} />
+        <Route path='/admin-dashboard' element={<AdminDashboard />} />
       
         <Route 
           path="/my-events" 

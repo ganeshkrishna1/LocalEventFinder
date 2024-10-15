@@ -42,13 +42,17 @@ const EventScreen = () => {
   // Delete event handler
   const handleDeleteEvent = async (eventId) => {
     try {
-      await axiosInstance.delete(`/events/${eventId}`,config);
+      await axiosInstance.delete(`/events/${eventId}`, config);
       // Remove the event from the events state
-      setEvents((prevEvents) => prevEvents.filter(event => event._id !== eventId));
-      setFilteredEvents((prevFilteredEvents) => prevFilteredEvents.filter(event => event._id !== eventId));
-      console.log('Event deleted successfully');
+      setEvents((prevEvents) =>
+        prevEvents.filter((event) => event._id !== eventId)
+      );
+      setFilteredEvents((prevFilteredEvents) =>
+        prevFilteredEvents.filter((event) => event._id !== eventId)
+      );
+      console.log("Event deleted successfully");
     } catch (err) {
-      console.log('Error deleting event:', err);
+      console.log("Error deleting event:", err);
     }
   };
 
@@ -62,7 +66,10 @@ const EventScreen = () => {
         {/* Filter Dropdown */}
         <div className="flex justify-around mb-8">
           {user && user.isAdmin && (
-            <div onClick={handleAddEvent} className="flex items-center space-x-2 cursor-pointer">
+            <div
+              onClick={handleAddEvent}
+              className="flex items-center space-x-2 cursor-pointer"
+            >
               <IoIosAddCircle className="text-4xl" />
               <span>Add Event</span>
             </div>
@@ -81,11 +88,11 @@ const EventScreen = () => {
         </div>
 
         {/* Event Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-4">
           {filteredEvents.map((event) => (
-            <EventCard 
-              key={event._id} 
-              event={event} 
+            <EventCard
+              key={event._id}
+              event={event}
               onDelete={handleDeleteEvent} // Pass delete handler to EventCard
             />
           ))}
@@ -93,7 +100,9 @@ const EventScreen = () => {
 
         {/* No Events Found */}
         {filteredEvents.length === 0 && (
-          <div className="text-center mt-8 text-gray-500">No events found for this category.</div>
+          <div className="text-center mt-8 text-gray-500">
+            No events found for this category.
+          </div>
         )}
       </div>
     </div>
