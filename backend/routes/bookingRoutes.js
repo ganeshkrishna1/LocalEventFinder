@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUserBookings, createBooking, updateBookingStatus, deleteBooking, getAllBookings } from '../controllers/bookingController.js';
+import { getUserBookings, createBooking, updateBookingStatus, deleteBooking, getAllBookings, getUserBookingsWithReviews } from '../controllers/bookingController.js';
 
 const router = express.Router();
 
@@ -11,5 +11,6 @@ router.post('/', createBooking); // Create a new booking
 router.put('/:id', updateBookingStatus); // Update booking status
 router.delete('/:id', deleteBooking); // Delete a booking
 router.get('/', getAllBookings); // Get all bookings (admin)
+router.get('/bookings-reviews/user/:userId', getUserBookingsWithReviews);
 
 export default router;

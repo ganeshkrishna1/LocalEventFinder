@@ -2,6 +2,7 @@
 import Booking from '../models/Booking.js';
 import Event from '../models/Event.js';
 import mongoose from 'mongoose';
+import Review from '../models/Review.js';
 // Create a new booking
 export const createBooking = async (req, res) => {
   const { event, user, totalAmount, numberOfTickets } = req.body; // Extract required fields from the request body
@@ -125,5 +126,41 @@ export const getUserBookings = async (req, res) => {
   } catch (error) {
     console.error('Error fetching bookings:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const getUserBookingsWithReviews = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Fetch bookings for the user
+    const bookings = await Booking.find({ user: userId })
+      .populate('event', 'title date category imageUrl') // Populate event details
+      .lean(); // Lean to get plain JS objects
+
+    // Get event IDs from bookings to fetch reviews
+    const eventIds = bookings.map(booking => booking.event._id);
+
+    // Fetch reviews for the events related to the user's bookings
+    const reviews = await Review.find({
+      user: userId,
+      event: { $in: eventIds }
+    }).lean(); // Lean to get plain JS objects
+
+    // Combine bookings and reviews
+    const bookingsWithReviews = bookings.map(booking => {
+      const review = reviews.find(r => r.event.toString() === booking.event._id.toString());
+      return {
+        ...booking,
+        review: review || null // Attach the review if exists, or null
+      };
+    });
+
+    res.status(200).json({
+      bookings: bookingsWithReviews,
+      reviews: reviews
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
   }
 };

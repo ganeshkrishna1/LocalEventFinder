@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const ConfirmationPage = () => {
   const location = useLocation();
@@ -21,12 +21,12 @@ const ConfirmationPage = () => {
         </div>
 
         <div className="mt-6">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="block w-full text-center bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
           >
             Return to Home
-          </a>
+          </Link>
         </div>
       </div>
     </div>

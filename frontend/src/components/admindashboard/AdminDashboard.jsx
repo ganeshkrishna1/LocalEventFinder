@@ -1,45 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
 import { axiosInstance } from "../../services/BaseUrl";
+import {config} from '../../services/EventService'
 
 function AdminDashboard() {
-//   const [ticketSalesData, setTicketSalesData] = useState([]);
-//   const [loading, setLoading] = useState(true); // Loading state
+  const [ticketSalesData, setTicketSalesData] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
-//   useEffect(() => {
-//     const getTicketSalesData = async () => {
-//       try {
-//         const res = await axiosInstance.get('/events'); // Adjust endpoint as necessary
-//         // Assuming res.data contains ticket sales information
-//         setTicketSalesData(res.data);
-//       } catch (err) {
-//         console.log(err);
-//       } finally {
-//         setLoading(false); // Set loading to false after fetching data
-//       }
-//     };
+  useEffect(() => {
+    const getTicketSalesData = async () => {
+      try {
+        const res = await axiosInstance.get('/dashboard/ticket-sales',config); // New endpoint for ticket sales data
+        setTicketSalesData(res.data); // Set the fetched data into state
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false); // Set loading to false after fetching data
+      }
+    };
+  
+    getTicketSalesData();
+  }, []);
+  
 
-//     getTicketSalesData();
-//   }, []);
-
-  const ticketSalesData = [
-    { name: "Concert", value: 450 },
-    { name: "Sport", value: 300 },
-    { name: "Workshop", value: 200 },
-  ];
+  // const ticketSalesData = [
+  //   { name: "Concert", value: 450 },
+  //   { name: "Sport", value: 300 },
+  //   { name: "Workshop", value: 200 },
+  // ];
 
   // Define an array of colors for the categories
   const COLORS = ["#091057", "#243642", "#D91656"];
 
   // Render loading spinner if data is being fetched
-//   if (loading) {
-//     return (
-//       <div className="h-screen flex items-center justify-center">
-//         <div className="border-t-4 border-blue-500 rounded-full w-16 h-16 animate-spin"></div>
-//         <p className="ml-4 text-xl font-bold">Loading Ticket Sales Data...</p>
-//       </div>
-//     );
-//   }
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="border-t-4 border-blue-500 rounded-full w-16 h-16 animate-spin"></div>
+        <p className="ml-4 text-xl font-bold">Loading Ticket Sales Data...</p>
+      </div>
+    );
+  }
 
   // Render message if no data is found
   if (ticketSalesData.length === 0) {
