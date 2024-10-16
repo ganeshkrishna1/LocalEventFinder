@@ -17,6 +17,7 @@ import ConfirmationPage from './pages/booking/ConfirmationPage';
 import EditEventForm from './components/event/EditEventForm';
 import AdminDashboard from './components/admindashboard/AdminDashboard';
 import SocialShare from './components/social-share/SocialShare';
+import MyWishlist from './pages/my-wishlist/MyWishlist';
 function App() {
   return (
     <>
@@ -35,8 +36,11 @@ function App() {
         <Route path="/confirmation" element={<ConfirmationPage />} />
         <Route path='/addEvent' element={<EventForm />}/>
         <Route path='/editEvent/:id' element={<EditEventForm />} />
-        <Route path='/admin-dashboard' element={<AdminDashboard />} />
+        {/* <Route path='/admin-dashboard' element={<AdminDashboard />} /> */}
         <Route path='/social-share' element={<SocialShare />} />
+        <Route path='/my-wishlist' element={<MyWishlist />} />
+
+
       
         <Route 
           path="/my-events" 
@@ -46,11 +50,20 @@ function App() {
             </ProtectedRoute>
           } 
         />
+        
         <Route 
           path="/admin" 
           element={
             <ProtectedRoute role="admin">
               <h1>Admin Dashboard</h1>
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/admin-dashboard" 
+          element={
+            <ProtectedRoute role="admin">
+              <AdminDashboard />
             </ProtectedRoute>
           } 
         />
