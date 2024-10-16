@@ -16,6 +16,14 @@ const EventCard = ({ event, onDelete }) => {
     navigate(`/event/${event._id}`);
   };
 
+  const handleShareEvent = (eventId) =>{
+    const shareObject = {
+      title : 'Check out this amazing event!',
+      shareUrl: `http://localhost:5173/event/${eventId}`
+    }
+    navigate('/social-share',{ state: { someObject: shareObject } })
+  }
+
   return (
     <div className="max-w-md bg-orange-100 border border-pink-300 rounded-lg shadow overflow-hidden flex flex-col">
       <div className="p-2">
@@ -39,7 +47,8 @@ const EventCard = ({ event, onDelete }) => {
           <strong>Category:</strong> {event.category}
         </p>
         <p className="mb-3 font-normal text-gray-800">
-          <strong>Description:</strong> {event.description || "No description available"}
+          <strong>Description:</strong>{" "}
+          {event.description || "No description available"}
         </p>
         <p className="mb-3 font-normal text-gray-800">
           <strong>Price:</strong> ${event.price}
@@ -59,12 +68,19 @@ const EventCard = ({ event, onDelete }) => {
           />
         </div>
       ) : (
-        <div className="bottom-4 left-4 right-4 p-4">
+        <div className="bottom-4 left-4 right-4 p-4 flex justify-between">
           <button
             onClick={handleViewEvent}
-            className="block w-full bg-blue-700 text-white text-center py-3 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
+            className="block w-40 bg-blue-700 text-white text-center py-3 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
           >
             View
+          </button>
+
+          <button
+            onClick={()=>handleShareEvent(event._id)}
+            className="block w-40 bg-green-600 text-white text-center p-2 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300"
+          >
+            Share
           </button>
         </div>
       )}

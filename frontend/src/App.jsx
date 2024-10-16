@@ -16,6 +16,7 @@ import BookingSummary from './pages/booking/BookingSummary';
 import ConfirmationPage from './pages/booking/ConfirmationPage';
 import EditEventForm from './components/event/EditEventForm';
 import AdminDashboard from './components/admindashboard/AdminDashboard';
+import SocialShare from './components/social-share/SocialShare';
 function App() {
   return (
     <>
@@ -35,6 +36,7 @@ function App() {
         <Route path='/addEvent' element={<EventForm />}/>
         <Route path='/editEvent/:id' element={<EditEventForm />} />
         <Route path='/admin-dashboard' element={<AdminDashboard />} />
+        <Route path='/social-share' element={<SocialShare />} />
       
         <Route 
           path="/my-events" 

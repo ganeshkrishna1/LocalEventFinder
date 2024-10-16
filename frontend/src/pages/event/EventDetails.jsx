@@ -8,6 +8,8 @@ function EventDetail() {
   const [event, setEvent] = useState(null);
   const navigate = useNavigate();
 
+  const user = JSON.parse(localStorage.getItem('user'));
+
   useEffect(() => {
     const fetchEvent = async () => {
       const response = await axios.get(`http://localhost:5000/api/events/${eventId}`);
@@ -21,7 +23,11 @@ function EventDetail() {
   }
 
   const handleBookNow = () => {
-    navigate(`/booking-summary/${eventId}`); // Redirect to Booking Summary
+    if(user){
+      navigate(`/booking-summary/${eventId}`); // Redirect to Booking Summary
+    }else{
+      navigate('/signin');
+    }  
   };
 
   return (
