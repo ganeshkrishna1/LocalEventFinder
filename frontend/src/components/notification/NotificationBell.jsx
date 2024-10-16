@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaBell } from 'react-icons/fa';
 import Modal from 'react-modal';
 import axios from 'axios';
+import { axiosInstance } from '../../services/BaseUrl';
 
 const NotificationBell = () => {
   const [rsvpNotifications, setRsvpNotifications] = useState([]); // Initialize as an empty array
@@ -13,16 +14,26 @@ const NotificationBell = () => {
     const fetchRsvpNotifications = async () => {
       try {
         const user = JSON.parse(localStorage.getItem('user'));
-        const response = await axios.get(`/api/bookings/rsvp-notifications/${user._id}`);
+        const response = await axiosInstance.get(`/bookings/rsvp-notifications/${user._id}`);
         
         console.log('RSVP Response:', response.data); // Log the full response
-  
+
         // Check if response contains pendingRsvps and log it
         const pendingRsvps = response.data.pendingRsvps || [];
         console.log('Pending RSVPs:', pendingRsvps); // Log the pending RSVPs
-  
-        // Ensure it sets an array
-        setRsvpNotifications(pendingRsvps);
+
+        // Filter notifications to show only those that are happening within the next day
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+
+        const filteredRsvps = pendingRsvps.filter(rsvp => {
+          const eventDate = new Date(rsvp.event.date);
+          return eventDate >= today && eventDate <= tomorrow; // Only include events within the next day
+        });
+
+        // Set the filtered notifications
+        setRsvpNotifications(filteredRsvps);
       } catch (error) {
         setError('Error fetching RSVP notifications');
         console.error('Fetch error:', error); // Log the error
@@ -30,10 +41,9 @@ const NotificationBell = () => {
         setLoading(false);
       }
     };
-  
+
     fetchRsvpNotifications();
   }, []);
-  
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -48,7 +58,7 @@ const NotificationBell = () => {
       const user = JSON.parse(localStorage.getItem('user'));
 
       // Submit RSVP confirmation to the backend
-      await axios.post(`/api/bookings/rsvp`, {
+      await axiosInstance.post(`/bookings/rsvp`, {
         user: user._id,
         event: eventId,
         rsvp: confirmation,
@@ -76,38 +86,37 @@ const NotificationBell = () => {
 
       {/* RSVP Modal */}
       {modalIsOpen && (
-  <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
-    <h2 className="text-xl font-bold mb-4">RSVP Notifications</h2>
-    {loading ? (
-      <p>Loading...</p>
-    ) : error ? (
-      <p className="text-red-500">{error}</p>
-    ) : rsvpNotifications.length === 0 ? (
-      <p>No pending RSVPs.</p>
-    ) : (
-      rsvpNotifications.map((rsvp) => (
-        <div key={rsvp.event._id} className="mb-4">
-          <p className="text-lg font-bold">{rsvp.event.title}</p>
-          <p className="text-sm text-gray-600">Date: {new Date(rsvp.event.date).toLocaleDateString()}</p>
-          <p>Would you like to RSVP for this event?</p>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded mt-2 mr-2"
-            onClick={() => handleRsvpConfirmation(rsvp.event._id, true)}
-          >
-            Yes, RSVP
-          </button>
-          <button
-            className="bg-gray-500 text-white px-4 py-2 rounded mt-2"
-            onClick={() => handleRsvpConfirmation(rsvp.event._id, false)}
-          >
-            No, Cancel
-          </button>
-        </div>
-      ))
-    )}
-  </Modal>
-)}
-
+        <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
+          <h2 className="text-xl font-bold mb-4">RSVP Notifications</h2>
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : rsvpNotifications.length === 0 ? (
+            <p>No pending RSVPs.</p>
+          ) : (
+            rsvpNotifications.map((rsvp) => (
+              <div key={rsvp.event._id} className="mb-4">
+                <p className="text-lg font-bold">{rsvp.event.title}</p>
+                <p className="text-sm text-gray-600">Date: {new Date(rsvp.event.date).toLocaleDateString()}</p>
+                <p>Would you like to RSVP for this event?</p>
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded mt-2 mr-2"
+                  onClick={() => handleRsvpConfirmation(rsvp.event._id, true)}
+                >
+                  Yes, RSVP
+                </button>
+                <button
+                  className="bg-gray-500 text-white px-4 py-2 rounded mt-2"
+                  onClick={() => handleRsvpConfirmation(rsvp.event._id, false)}
+                >
+                  No, Cancel
+                </button>
+              </div>
+            ))
+          )}
+        </Modal>
+      )}
     </>
   );
 };
