@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
 import { axiosInstance } from "../../services/BaseUrl";
-import {config} from '../../services/EventService'
+import { Config } from "../../services/Config";
 
 function AdminDashboard() {
   const [ticketSalesData, setTicketSalesData] = useState([]);
@@ -10,7 +10,7 @@ function AdminDashboard() {
   useEffect(() => {
     const getTicketSalesData = async () => {
       try {
-        const res = await axiosInstance.get('/dashboard/ticket-sales',config); // New endpoint for ticket sales data
+        const res = await axiosInstance.get('/dashboard/ticket-sales',Config()); // New endpoint for ticket sales data
         setTicketSalesData(res.data); // Set the fetched data into state
       } catch (err) {
         console.log(err);
@@ -21,13 +21,6 @@ function AdminDashboard() {
   
     getTicketSalesData();
   }, []);
-  
-
-  // const ticketSalesData = [
-  //   { name: "Concert", value: 450 },
-  //   { name: "Sport", value: 300 },
-  //   { name: "Workshop", value: 200 },
-  // ];
 
   // Define an array of colors for the categories
   const COLORS = ["#091057", "#243642", "#D91656"];

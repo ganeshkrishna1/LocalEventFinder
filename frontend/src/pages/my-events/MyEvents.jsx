@@ -4,7 +4,7 @@ import { format, isBefore } from 'date-fns';
 import { FaStar } from 'react-icons/fa';
 import Modal from 'react-modal';
 import { axiosInstance } from '../../services/BaseUrl';
-import {config} from '../../services/EventService'
+import { Config } from '../../services/Config';
 
 // Set the app element for react-modal
 Modal.setAppElement('#root'); // Change '#root' to the appropriate selector for your main app element
@@ -86,7 +86,7 @@ const MyEvents = () => {
             event: selectedEvent.event._id,
             rating,
             comment,
-        }, config);
+        }, Config());
 
         // Update the bookings and reviews state
         const updatedBookings = bookings.map((booking) =>

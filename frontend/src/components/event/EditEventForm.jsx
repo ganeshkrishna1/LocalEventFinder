@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../services/BaseUrl';
-import { config } from '../../services/EventService';
+import { Config } from '../../services/Config';
 
 const EditEventForm = () => {
   const { id } = useParams(); // Get the event ID from the URL
@@ -23,7 +23,7 @@ const EditEventForm = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await axiosInstance.get(`/events/${id}`, config);
+        const res = await axiosInstance.get(`/events/${id}`, Config());
         
         // Set form data, ensure date is formatted correctly
         const eventData = res.data;
@@ -65,7 +65,7 @@ const EditEventForm = () => {
     if (validateForm()) {
       try {
         // Update event via API
-        await axiosInstance.put(`/events/${id}`, formData, config);
+        await axiosInstance.put(`/events/${id}`, formData, Config());
         console.log('Event updated successfully:', formData);
         navigate('/events'); // Redirect to the events page after successful update
       } catch (error) {

@@ -4,7 +4,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { IoIosAddCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../services/BaseUrl";
-import { config } from "../../services/EventService";
+import { Config } from "../../services/Config";
 
 const EventScreen = () => {
   const [events, setEvents] = useState([]); // Store all events
@@ -42,7 +42,7 @@ const EventScreen = () => {
   // Delete event handler
   const handleDeleteEvent = async (eventId) => {
     try {
-      await axiosInstance.delete(`/events/${eventId}`, config);
+      await axiosInstance.delete(`/events/${eventId}`, Config());
       // Remove the event from the events state
       setEvents((prevEvents) =>
         prevEvents.filter((event) => event._id !== eventId)

@@ -38,13 +38,10 @@ const EventForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-        console.log('Form submitted successfully:', formData); // displaying toast messages for successful creation
       // Submit form data to the backend (API call)
       try{
         const data = await postEvent(formData);
-        navigate('/events');
-        console.log(data);
-        
+        navigate('/events');        
       }catch(err){
         console.log(err);
       }
