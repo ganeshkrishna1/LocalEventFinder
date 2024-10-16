@@ -18,6 +18,8 @@ const MyEvents = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [notification, setNotification] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchBookingsWithReviews = async () => {
@@ -25,10 +27,9 @@ const MyEvents = () => {
         setLoading(true);
         const user = JSON.parse(localStorage.getItem('user'));
 
-        // Optimized API call to fetch bookings and reviews together
+        // Fetch bookings and reviews together
         const response = await axiosInstance.get(`/bookings/bookings-reviews/user/${user._id}`);
         
-        // Extract bookings and reviews from the response
         const { bookings, reviews } = response.data;
 
         setBookings(bookings);
@@ -49,18 +50,6 @@ const MyEvents = () => {
     fetchBookingsWithReviews();
   }, []);
 
-  if (loading) {
-    return <Loading />;
-  }
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
-
-  const today = new Date();
-  const bookedEvents = bookings.filter((booking) => isBefore(today, new Date(booking.event.date)));
-  const visitedEvents = bookings.filter((booking) => isBefore(new Date(booking.event.date), today));
-
   const openModal = (booking) => {
     setSelectedEvent(booking);
     setRating(booking.rating || 0);
@@ -77,39 +66,58 @@ const MyEvents = () => {
   };
 
   const submitReview = async () => {
+    setSubmitting(true);
     try {
-        const user = JSON.parse(localStorage.getItem('user'));
+      const user = JSON.parse(localStorage.getItem('user'));
 
-        // Post the review to the API
-        await axiosInstance.post('/reviews', {
-            user: user._id,
-            event: selectedEvent.event._id,
-            rating,
-            comment,
-        }, Config());
+      // Post the review to the API
+      await axiosInstance.post('/reviews', {
+        user: user._id,
+        event: selectedEvent.event._id,
+        rating,
+        comment,
+      }, Config());
 
-        // Update the bookings and reviews state
-        const updatedBookings = bookings.map((booking) =>
-            booking._id === selectedEvent._id ? { ...booking, rating, comment } : booking
-        );
+      // Update the bookings and reviews state
+      const updatedBookings = bookings.map((booking) =>
+        booking._id === selectedEvent._id ? { ...booking, rating, comment } : booking
+      );
 
-        // Update the reviews state to include the new review
-        setReviews((prevReviews) => ({
-            ...prevReviews,
-            [selectedEvent.event._id]: { rating, comment }, // add or update the review for the specific event
-        }));
+      // Update the reviews state to include the new review
+      setReviews((prevReviews) => ({
+        ...prevReviews,
+        [selectedEvent.event._id]: { rating, comment },
+      }));
 
-        setBookings(updatedBookings);
-        setModalIsOpen(false);
+      setBookings(updatedBookings);
+      setNotification('Review submitted successfully!');
+      setModalIsOpen(false);
     } catch (error) {
-        console.error('Error submitting review:', error);
+      setNotification('Error submitting review. Please try again.');
+      console.error('Error submitting review:', error);
+    } finally {
+      setSubmitting(false);
     }
-};
+  };
 
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
+
+  const today = new Date();
+  const bookedEvents = bookings.filter((booking) => isBefore(today, new Date(booking.event.date)));
+  const visitedEvents = bookings.filter((booking) => isBefore(new Date(booking.event.date), today));
 
   return (
     <div className="p-4 bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300 min-h-screen">
       <h2 className="text-2xl font-bold mb-4">My Booked Events</h2>
+
+      {/* Notification */}
+      {notification && <div className="bg-green-200 text-green-700 p-2 rounded mb-4">{notification}</div>}
 
       {/* Booked Events Section */}
       {bookedEvents.length === 0 ? (
@@ -230,8 +238,9 @@ const MyEvents = () => {
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             onClick={submitReview}
+            disabled={submitting}
           >
-            Submit Review
+            {submitting ? 'Submitting...' : 'Submit Review'}
           </button>
           <button
             className="bg-red-500 text-white px-4 py-2 rounded ml-4 hover:bg-red-600"

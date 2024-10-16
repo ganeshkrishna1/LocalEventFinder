@@ -1,39 +1,24 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom'; 
-import { CiMenuFries } from 'react-icons/ci'; 
+import React, { useState, useContext } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { CiMenuFries } from 'react-icons/ci';
 import { ImCancelCircle } from 'react-icons/im';
 import { UserContext } from '../../contexts/UserContext';
+import NotificationBell from '../notification/NotificationBell';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  // const [user, setUser] = useState(null); // State to store user info
-  const {user,setUser,logout} = useContext(UserContext);
+  const { user, logout } = useContext(UserContext);
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   // Fetch user from localStorage if available
-  //   const loggedInUser = JSON.parse(localStorage.getItem('user'));
-  //   if (loggedInUser) {
-  //     setUser(loggedInUser);
-  //   }
-  // }, []);
 
   const handleNavLinkClick = () => {
     setMenuOpen(false); 
   };
 
-  // const handleLogout = () => {
-  //   // Clear user data from localStorage and state
-  //   localStorage.removeItem('user');
-  //   setUser(null);
-  //   navigate('/signin'); // Redirect to sign-in page after logout
-  // };
-
   return (
     <nav className="bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          
+
           {/* Logo or title */}
           <div className="flex-shrink-0">
             <NavLink to="/" className="text-xl font-bold text-gray-800" onClick={handleNavLinkClick}>
@@ -42,8 +27,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop menu */}
-          <div className="hidden md:flex space-x-8">
-            {/* Common Links */}
+          <div className="hidden md:flex space-x-8 items-center">
             <NavLink
               to="/"
               className={({ isActive }) =>
@@ -101,12 +85,12 @@ const Navbar = () => {
               </NavLink>
             )}
 
+            {/* Notification Bell Icon */}
+            {user && <NotificationBell />}
+
             {/* Show Logout if user is logged in */}
             {user ? (
-              <button
-                onClick={logout}
-                className="text-gray-800 hover:text-gray-600"
-              >
+              <button onClick={logout} className="text-gray-800 hover:text-gray-600">
                 Logout
               </button>
             ) : (
@@ -136,14 +120,11 @@ const Navbar = () => {
 
           {/* Mobile menu toggle */}
           <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="text-gray-800 focus:outline-none"
-            >
+            <button onClick={() => setMenuOpen(!menuOpen)} className="text-gray-800 focus:outline-none">
               {menuOpen ? (
-                <ImCancelCircle className="h-6 w-6" /> 
+                <ImCancelCircle className="h-6 w-6" />
               ) : (
-                <CiMenuFries className="h-6 w-6" /> 
+                <CiMenuFries className="h-6 w-6" />
               )}
             </button>
           </div>
@@ -158,7 +139,7 @@ const Navbar = () => {
             className={({ isActive }) =>
               isActive ? "block text-blue-500 px-4 py-2" : "block text-gray-800 px-4 py-2 hover:bg-gray-200"
             }
-            onClick={handleNavLinkClick} 
+            onClick={handleNavLinkClick}
           >
             Home
           </NavLink>
@@ -168,12 +149,11 @@ const Navbar = () => {
             className={({ isActive }) =>
               isActive ? "block text-blue-500 px-4 py-2" : "block text-gray-800 px-4 py-2 hover:bg-gray-200"
             }
-            onClick={handleNavLinkClick} 
+            onClick={handleNavLinkClick}
           >
             Events
           </NavLink>
 
-          {/* Conditionally render based on user role */}
           {user && !user.isAdmin && (
             <>
               <NavLink
@@ -181,7 +161,7 @@ const Navbar = () => {
                 className={({ isActive }) =>
                   isActive ? "block text-blue-500 px-4 py-2" : "block text-gray-800 px-4 py-2 hover:bg-gray-200"
                 }
-                onClick={handleNavLinkClick} 
+                onClick={handleNavLinkClick}
               >
                 About Us
               </NavLink>
@@ -191,7 +171,7 @@ const Navbar = () => {
                 className={({ isActive }) =>
                   isActive ? "block text-blue-500 px-4 py-2" : "block text-gray-800 px-4 py-2 hover:bg-gray-200"
                 }
-                onClick={handleNavLinkClick} 
+                onClick={handleNavLinkClick}
               >
                 My Events
               </NavLink>
@@ -204,18 +184,14 @@ const Navbar = () => {
               className={({ isActive }) =>
                 isActive ? "block text-blue-500 px-4 py-2" : "block text-gray-800 px-4 py-2 hover:bg-gray-200"
               }
-              onClick={handleNavLinkClick} 
+              onClick={handleNavLinkClick}
             >
               Dashboard
             </NavLink>
           )}
 
-          {/* Logout option for mobile */}
           {user ? (
-            <button
-              onClick={logout}
-              className="block text-gray-800 px-4 py-2 hover:bg-gray-200"
-            >
+            <button onClick={logout} className="block text-gray-800 px-4 py-2 hover:bg-gray-200">
               Logout
             </button>
           ) : (
@@ -225,7 +201,7 @@ const Navbar = () => {
                 className={({ isActive }) =>
                   isActive ? "block text-blue-500 px-4 py-2" : "block text-gray-800 px-4 py-2 hover:bg-gray-200"
                 }
-                onClick={handleNavLinkClick} 
+                onClick={handleNavLinkClick}
               >
                 Sign In
               </NavLink>
@@ -235,7 +211,7 @@ const Navbar = () => {
                 className={({ isActive }) =>
                   isActive ? "block text-blue-500 px-4 py-2" : "block text-gray-800 px-4 py-2 hover:bg-gray-200"
                 }
-                onClick={handleNavLinkClick} 
+                onClick={handleNavLinkClick}
               >
                 Sign Up
               </NavLink>

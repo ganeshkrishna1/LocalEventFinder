@@ -1,5 +1,6 @@
 import express from 'express';
 import { getUserBookings, createBooking, updateBookingStatus, deleteBooking, getAllBookings, getUserBookingsWithReviews } from '../controllers/bookingController.js';
+import { getRsvpNotifications, submitRsvp } from '../controllers/bookingController.js';
 
 const router = express.Router();
 
@@ -12,5 +13,8 @@ router.put('/:id', updateBookingStatus); // Update booking status
 router.delete('/:id', deleteBooking); // Delete a booking
 router.get('/', getAllBookings); // Get all bookings (admin)
 router.get('/bookings-reviews/user/:userId', getUserBookingsWithReviews);
+router.get('/rsvp-notifications/:userId', getRsvpNotifications);
+router.post('/rsvp', submitRsvp);
+
 
 export default router;

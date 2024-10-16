@@ -164,3 +164,40 @@ export const getUserBookingsWithReviews = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
+// Get all bookings for a user where RSVP is false
+// Get all bookings for a user where RSVP is false
+export const getRsvpNotifications = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const bookings = await Booking.find({ user: userId, rsvp: false }).populate('event');
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ message: 'No RSVP notifications found.' });
+    }
+    res.json({ pendingRsvps: bookings });
+  } catch (error) {
+    console.error('Error fetching RSVP notifications:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// Update RSVP status for a booking
+export const submitRsvp = async (req, res) => {
+  const { user, event, rsvp } = req.body;
+
+  try {
+    // Find the booking for the user and event
+    const booking = await Booking.findOne({ user, event });
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found.' });
+    }
+
+    // Update the RSVP status
+    booking.rsvp = rsvp;
+    await booking.save();
+
+    res.json({ message: 'RSVP status updated successfully', booking });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};

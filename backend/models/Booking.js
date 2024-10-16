@@ -18,8 +18,8 @@ const bookingSchema = new mongoose.Schema({
   },
   paymentStatus: {
     type: String,
-    enum: ['Pending', 'Paid'], // Define possible statuses
-    default: 'Pending', // Default to 'Pending'
+    enum: ['Pending', 'Paid'],
+    default: 'Pending',
   },
   numberOfTickets: {
     type: Number,
@@ -28,6 +28,10 @@ const bookingSchema = new mongoose.Schema({
   bookingDate: {
     type: Date,
     default: Date.now, // Automatically set the booking date
+  },
+  rsvp: {
+    type: Boolean,
+    default: false, // RSVP is false by default until user confirms
   },
 });
 
