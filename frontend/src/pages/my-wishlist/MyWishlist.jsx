@@ -54,9 +54,7 @@ function MyWishlist() {
               <p className="text-gray-700">
                 <strong>Date:</strong> {isValid(new Date(wishlistItem.event.date)) ? format(new Date(wishlistItem.event.date), 'PP') : 'Invalid date'}
               </p>
-              <p className="text-gray-700">
-                <strong>Added to Wishlist:</strong> {isValid(new Date(wishlistItem.createdAt)) ? format(new Date(wishlistItem.createdAt), 'PP') : 'Invalid date'}
-              </p>
+              
             </div>
           ))
         ) : (
