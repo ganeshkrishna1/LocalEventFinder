@@ -18,6 +18,7 @@ import EditEventForm from './components/event/EditEventForm';
 import AdminDashboard from './components/admindashboard/AdminDashboard';
 import SocialShare from './components/social-share/SocialShare';
 import MyWishlist from './pages/my-wishlist/MyWishlist';
+import EventStatsTable from './components/event/EventStatsTable';
 function App() {
   return (
     <>
@@ -34,9 +35,9 @@ function App() {
         <Route path="/booking-summary/:eventId" element={<BookingSummary />} />
         <Route path="/payment/:bookingId" element={<PaymentPage />} />
         <Route path="/confirmation" element={<ConfirmationPage />} />
-        <Route path='/addEvent' element={<EventForm />}/>
-        <Route path='/editEvent/:id' element={<EditEventForm />} />
-        {/* <Route path='/admin-dashboard' element={<AdminDashboard />} /> */}
+        <Route path='/addEvent' element={<EventForm />}/> {/* admin */}
+        <Route path='/editEvent/:id' element={<EditEventForm />} /> {/* admin */}
+        <Route path='/analytics' element={<AdminDashboard />} />
         <Route path='/social-share' element={<SocialShare />} />
         <Route path='/my-wishlist' element={<MyWishlist />} />
 
@@ -63,7 +64,7 @@ function App() {
           path="/admin-dashboard" 
           element={
             <ProtectedRoute role="admin">
-              <AdminDashboard />
+              <EventStatsTable />
             </ProtectedRoute>
           } 
         />

@@ -27,7 +27,7 @@ const EventCard = ({ event, onDelete }) => {
   };
 
   return (
-    <div className="max-w-md bg-orange-100 border border-pink-300 rounded-lg shadow overflow-hidden flex flex-col">
+    <div className="max-w-sm bg-orange-100 border border-pink-300 rounded-lg shadow overflow-hidden flex flex-col">
       <div className="p-2">
         <img
           className="w-full h-52 rounded-lg shadow object-cover"
