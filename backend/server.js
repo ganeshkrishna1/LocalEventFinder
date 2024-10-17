@@ -7,6 +7,7 @@ import eventRoutes from './routes/eventRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
+import wishlistRoutes from './routes/wishlistRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 
@@ -26,6 +27,7 @@ app.use(express.json()); // For parsing JSON requests
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/dashboard', dashboardRoutes);
