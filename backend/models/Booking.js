@@ -30,8 +30,9 @@ const bookingSchema = new mongoose.Schema({
     default: Date.now, // Automatically set the booking date
   },
   rsvp: {
-    type: Boolean,
-    default: false, // RSVP is false by default until user confirms
+    type: String,
+    enum: ['Pending', 'Attending', 'Not Attending'], // RSVP can be Pending, Attending, or Not Attending
+    default: 'Pending', // Default RSVP status
   },
 });
 

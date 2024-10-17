@@ -17,8 +17,14 @@ const EventScreen = () => {
     const getAllEvents = async () => {
       try {
         const res = await axiosInstance.get("/events");
-        setEvents(res.data); // Set both events and filteredEvents initially
-        setFilteredEvents(res.data);
+
+        const today = new Date();
+        
+        // Filter events to show only future or present events
+        const futureEvents = res.data.filter(event => new Date(event.date) >= today);
+        
+        setEvents(futureEvents); // Set both events and filteredEvents initially
+        setFilteredEvents(futureEvents);
       } catch (err) {
         console.log(err);
       }
@@ -32,7 +38,7 @@ const EventScreen = () => {
     setFilterCategory(category);
 
     if (category === "") {
-      setFilteredEvents(events); // Show all events when no filter is selected
+      setFilteredEvents(events); // Show all future events when no filter is selected
     } else {
       const filtered = events.filter((event) => event.category === category);
       setFilteredEvents(filtered); // Update filtered events based on category
@@ -88,6 +94,7 @@ const EventScreen = () => {
         </div>
 
         {/* Event Cards */}
+        <div className="flex justify-center">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-4">
           {filteredEvents.map((event) => (
             <EventCard
@@ -96,6 +103,7 @@ const EventScreen = () => {
               onDelete={handleDeleteEvent} // Pass delete handler to EventCard
             />
           ))}
+        </div>
         </div>
 
         {/* No Events Found */}

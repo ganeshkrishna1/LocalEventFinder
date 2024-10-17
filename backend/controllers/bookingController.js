@@ -165,15 +165,19 @@ export const getUserBookingsWithReviews = async (req, res) => {
   }
 };
 // Get all bookings for a user where RSVP is false
-// Get all bookings for a user where RSVP is false
 export const getRsvpNotifications = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const bookings = await Booking.find({ user: userId, rsvp: false }).populate('event');
+    // Fetch bookings where RSVP is still "Pending"
+    const bookings = await Booking.find({ user: userId, rsvp: 'Pending' }).populate('event');
+
+    // If no pending RSVPs, return a message
     if (!bookings || bookings.length === 0) {
       return res.status(404).json({ message: 'No RSVP notifications found.' });
     }
+
+    // Return pending RSVPs
     res.json({ pendingRsvps: bookings });
   } catch (error) {
     console.error('Error fetching RSVP notifications:', error);
@@ -181,6 +185,7 @@ export const getRsvpNotifications = async (req, res) => {
   }
 };
 
+// controllers/bookingController.js
 // Update RSVP status for a booking
 export const submitRsvp = async (req, res) => {
   const { user, event, rsvp } = req.body;
@@ -192,8 +197,10 @@ export const submitRsvp = async (req, res) => {
       return res.status(404).json({ message: 'Booking not found.' });
     }
 
-    // Update the RSVP status
-    booking.rsvp = rsvp;
+    // Update the RSVP status based on confirmation value
+    booking.rsvp = rsvp ? 'Attending' : 'Not Attending';
+    
+    // Save the booking with updated RSVP status
     await booking.save();
 
     res.json({ message: 'RSVP status updated successfully', booking });

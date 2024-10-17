@@ -20,26 +20,25 @@ const NotificationBell = () => {
 
   const handleRSVP = async (eventId, confirmation) => {
     try {
-      await axiosInstance.post('/bookings/rsvp', { // Corrected line
+      const user = JSON.parse(localStorage.getItem('user'));
+  
+      // Submit RSVP confirmation to the backend
+      await axiosInstance.post('/bookings/rsvp', {
         user: user._id,
         event: eventId,
-        rsvp: confirmation,
+        rsvp: confirmation, // Pass true for Yes (Attending), false for No (Not Attending)
       });
-
+  
       // Update the notifications state to remove the RSVP that was confirmed
       setRsvpNotifications((prev) => prev.filter((rsvp) => rsvp.event._id !== eventId));
       closeModal();
     } catch (error) {
       console.error('Error confirming RSVP:', error);
     }
-    console.log(`RSVP confirmed for event ID: ${eventId}`);
-    // Optional close modal after RSVP
   };
+  
 
-  const handleDecline = (eventId, confirmation) => {
-    console.log(`RSVP declined for event ID: ${eventId}`);
-    closeModal(); // Optionally close modal after declining
-  };
+
 
   return (
     <>
@@ -75,7 +74,7 @@ const NotificationBell = () => {
                   Yes
                 </button>
                 <button
-                  onClick={() => handleDecline(rsvp.event._id, false)}
+                  onClick={() => handleRSVP(rsvp.event._id, false)}
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
                 >
                   No
