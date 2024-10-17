@@ -79,12 +79,18 @@ export const removeFromWishlist = async (req, res) => {
   const { id } = req.params; // Get the wishlist item ID from the request parameters
 
   try {
+    // Find the wishlist item by its ID
     const wishlistItem = await Wishlist.findById(id);
-    if (!wishlistItem) return res.status(404).json({ message: 'Wishlist item not found' });
+    if (!wishlistItem) {
+      return res.status(404).json({ message: 'Wishlist item not found' });
+    }
 
-    await wishlistItem.remove(); // Remove the wishlist item
+    // Use `deleteOne()` to remove the wishlist item
+    await wishlistItem.deleteOne();
+    
     res.json({ message: 'Wishlist item removed successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+

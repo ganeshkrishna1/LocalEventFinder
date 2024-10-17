@@ -3,9 +3,10 @@ import { useLocation } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from './CheckoutForm'; // Assuming CheckoutForm is in the same directory
+import { STRIPE_PUBLISHABLE_KEY } from '../../config.js';
 
-// Load the Stripe publishable key
-const stripePromise = loadStripe('pk_test_51Q9klwP55WWgq7OmEsGbXvuiHM1TRpFn7tQsIlO6HvnPpxyqa9DjEilJQcmdJBBeled9XA398T6ajlRUgMueKMBj00Herl3wg0');
+// Load the Stripe publishable key from the environment variables
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
 const PaymentPage = () => {
   const location = useLocation();

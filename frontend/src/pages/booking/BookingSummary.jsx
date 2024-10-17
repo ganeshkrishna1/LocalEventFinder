@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
-import CheckoutForm from './CheckoutForm'; // Import the CheckoutForm
 
 // Load the Stripe publishable key
-const stripePromise = loadStripe('pk_test_51Q9klwP55WWgq7OmEsGbXvuiHM1TRpFn7tQsIlO6HvnPpxyqa9DjEilJQcmdJBBeled9XA398T6ajlRUgMueKMBj00Herl3wg0');
 
 function BookingSummary() {
   const { eventId } = useParams(); // Get event ID from URL parameters

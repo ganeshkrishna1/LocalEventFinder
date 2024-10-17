@@ -1,6 +1,11 @@
 import Stripe from 'stripe';
+import dotenv from 'dotenv';
 
-const stripe = new Stripe('sk_test_51Q9klwP55WWgq7Omzvp5GyfGoKoErRLQzs43EHLFQBu9Kof1UV5knnwxe4tlIyzj0qg6p3SJyQTska46qOTcd5AC00mpxpLpdJ'); // Replace with your actual secret key
+// Load environment variables from the .env file
+dotenv.config();
+
+// Initialize Stripe with the secret key from environment variables
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createPaymentIntent = async (req, res) => {
   const { amount, currency } = req.body; // Extract amount and currency from the request body
