@@ -28,7 +28,7 @@ function AdminDashboard() {
   // Render loading spinner if data is being fetched
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="border-t-4 border-blue-500 rounded-full w-16 h-16 animate-spin"></div>
         <p className="ml-4 text-xl font-bold">Loading Ticket Sales Data...</p>
       </div>
@@ -45,7 +45,7 @@ function AdminDashboard() {
   }
 
   return (
-    <div className="bg-cover bg-center h-screen flex items-center justify-center bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
+    <div className="bg-cover bg-center min-h-screen flex items-center justify-center bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
       <div className="flex flex-col items-center w-full md:w-1/2 h-1/2 p-4">
         {/* Note at the top */}
         <h2 className="text-xl md:text-2xl font-bold text-gray-700 mb-4 text-center">

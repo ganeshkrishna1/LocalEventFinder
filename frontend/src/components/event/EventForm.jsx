@@ -67,7 +67,7 @@ const EventForm = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto my-3 p-6 bg-fuchsia-200 shadow-md rounded-lg">
+    <div className="max-w-3xl mx-auto p-6 shadow-md bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
       <h1 className="text-2xl font-bold text-center mb-6">Create Event</h1>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Title */}

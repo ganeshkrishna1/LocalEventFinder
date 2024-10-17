@@ -81,7 +81,7 @@ const EditEventForm = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-lg mx-auto p-6 shadow-md rounded-lg bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
       <h1 className="text-2xl font-bold text-center mb-6">Edit Event</h1>
       <form onSubmit={handleSubmit}>
         {/* Title */}
