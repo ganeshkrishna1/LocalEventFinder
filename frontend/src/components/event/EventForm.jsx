@@ -22,27 +22,45 @@ const EventForm = () => {
 
   const validateForm = () => {
     let formErrors = {};
+
+    // Validate the title
     if (!formData.title) formErrors.title = 'Title is required';
+
+    // Validate the description
     if (!formData.description) formErrors.description = 'Description is required';
+
+    // Validate the location
     if (!formData.location) formErrors.location = 'Location is required';
-    if (!formData.date) formErrors.date = 'Date is required';
+
+    // Validate the date (cannot be in the past)
+    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+    if (!formData.date) {
+      formErrors.date = 'Date is required';
+    } else if (formData.date < today) {
+      formErrors.date = 'Date cannot be in the past';
+    }
+
+    // Validate the price (must be a valid number)
     if (!formData.price || isNaN(formData.price)) formErrors.price = 'Valid price is required';
+
+    // Validate the category
     if (!formData.category) formErrors.category = 'Category is required';
+
+    // Validate the image URL
     if (!formData.imageUrl) formErrors.imageUrl = 'Image URL is required';
 
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      // Submit form data to the backend (API call)
-      try{
+      try {
+        // Submit form data to the backend (API call)
         const data = await postEvent(formData);
-        navigate('/events');        
-      }catch(err){
+        navigate('/events');
+      } catch (err) {
         console.log(err);
       }
     }

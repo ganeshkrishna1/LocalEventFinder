@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 import { MdDelete } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
+import { FaShareNodes } from "react-icons/fa6";
+import { FaEye } from "react-icons/fa";
 
 const EventCard = ({ event, onDelete }) => {
   const { user } = useContext(UserContext);
@@ -16,13 +18,13 @@ const EventCard = ({ event, onDelete }) => {
     navigate(`/event/${event._id}`);
   };
 
-  const handleShareEvent = (eventId) =>{
+  const handleShareEvent = (eventId) => {
     const shareObject = {
-      title : 'Check out this amazing event!',
-      shareUrl: `http://localhost:5173/event/${eventId}`
-    }
-    navigate('/social-share',{ state: { someObject: shareObject } })
-  }
+      title: "Check out this amazing event!",
+      shareUrl: `http://localhost:5173/event/${eventId}`,
+    };
+    navigate("/social-share", { state: { someObject: shareObject } });
+  };
 
   return (
     <div className="max-w-md bg-orange-100 border border-pink-300 rounded-lg shadow overflow-hidden flex flex-col">
@@ -54,6 +56,8 @@ const EventCard = ({ event, onDelete }) => {
           <strong>Price:</strong> ${event.price}
         </p>
       </div>
+      <div>
+      </div>
 
       {/* Admin Controls */}
       {user && user.isAdmin ? (
@@ -66,21 +70,27 @@ const EventCard = ({ event, onDelete }) => {
             className="text-5xl text-red-700 p-2 cursor-pointer"
             onClick={() => onDelete(event._id)} // Use the delete handler passed from EventScreen
           />
-        </div>
-      ) : (
-        <div className="bottom-4 left-4 right-4 p-4 flex justify-between">
           <button
             onClick={handleViewEvent}
-            className="block w-40 bg-blue-700 text-white text-center py-3 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
+            className="w-10 h-10 bg-blue-700 text-white rounded-full flex items-center justify-center hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
           >
-            View
+            <FaEye className="text-4xl p-2" title="View Event"/>
+          </button>
+        </div>
+      ) : (
+        <div className="bottom-2 left-4 right-4 p-4 flex justify-end gap-4">
+          <button
+            onClick={handleViewEvent}
+            className="w-10 h-10 bg-blue-700 text-white rounded-full flex items-center justify-center hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
+          >
+            <FaEye className="text-4xl p-2" title="View Event"/>
           </button>
 
           <button
-            onClick={()=>handleShareEvent(event._id)}
-            className="block w-40 bg-green-600 text-white text-center p-2 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300"
+            onClick={() => handleShareEvent(event._id)}
+            className="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300"
           >
-            Share
+            <FaShareNodes className="text-5xl p-2" title="Share Event"/>
           </button>
         </div>
       )}

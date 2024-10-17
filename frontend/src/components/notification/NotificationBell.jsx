@@ -1,64 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { FaBell } from 'react-icons/fa';
 import Modal from 'react-modal';
-import axios from 'axios';
+import { NotificationContext } from '../../contexts/NotificationContext';
 import { axiosInstance } from '../../services/BaseUrl';
 
 const NotificationBell = () => {
-  const [rsvpNotifications, setRsvpNotifications] = useState([]); // Initialize as an empty array
+  const { rsvpNotifications, loading, error, fetchNotifications, setRsvpNotifications } = useContext(NotificationContext);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchRsvpNotifications = async () => {
-      try {
-        const user = JSON.parse(localStorage.getItem('user'));
-        const response = await axiosInstance.get(`/bookings/rsvp-notifications/${user._id}`);
-        
-        console.log('RSVP Response:', response.data); // Log the full response
-
-        // Check if response contains pendingRsvps and log it
-        const pendingRsvps = response.data.pendingRsvps || [];
-        console.log('Pending RSVPs:', pendingRsvps); // Log the pending RSVPs
-
-        // Filter notifications to show only those that are happening within the next day
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
-
-        const filteredRsvps = pendingRsvps.filter(rsvp => {
-          const eventDate = new Date(rsvp.event.date);
-          return eventDate >= today && eventDate <= tomorrow; // Only include events within the next day
-        });
-
-        // Set the filtered notifications
-        setRsvpNotifications(filteredRsvps);
-      } catch (error) {
-        setError('Error fetching RSVP notifications');
-        console.error('Fetch error:', error); // Log the error
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRsvpNotifications();
-  }, []);
+  const user = JSON.parse(localStorage.getItem('user'));
 
   const openModal = () => {
     setModalIsOpen(true);
+    fetchNotifications(); // Fetch notifications when opening the modal
   };
 
   const closeModal = () => {
     setModalIsOpen(false);
   };
 
-  const handleRsvpConfirmation = async (eventId, confirmation) => {
+  const handleRSVP = async (eventId, confirmation) => {
     try {
-      const user = JSON.parse(localStorage.getItem('user'));
-
-      // Submit RSVP confirmation to the backend
-      await axiosInstance.post(`/bookings/rsvp`, {
+      await axiosInstance.post('/bookings/rsvp', { // Corrected line
         user: user._id,
         event: eventId,
         rsvp: confirmation,
@@ -70,13 +32,19 @@ const NotificationBell = () => {
     } catch (error) {
       console.error('Error confirming RSVP:', error);
     }
+    console.log(`RSVP confirmed for event ID: ${eventId}`);
+    // Optional close modal after RSVP
+  };
+
+  const handleDecline = (eventId, confirmation) => {
+    console.log(`RSVP declined for event ID: ${eventId}`);
+    closeModal(); // Optionally close modal after declining
   };
 
   return (
     <>
       <div className="relative cursor-pointer" onClick={openModal}>
         <FaBell className="text-2xl text-gray-600" />
-        {/* Show notification badge only if there are RSVP notifications */}
         {rsvpNotifications.length > 0 && (
           <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
             {rsvpNotifications.length}
@@ -85,38 +53,38 @@ const NotificationBell = () => {
       </div>
 
       {/* RSVP Modal */}
-      {modalIsOpen && (
-        <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
-          <h2 className="text-xl font-bold mb-4">RSVP Notifications</h2>
-          {loading ? (
-            <p>Loading...</p>
-          ) : error ? (
-            <p className="text-red-500">{error}</p>
-          ) : rsvpNotifications.length === 0 ? (
-            <p>No pending RSVPs.</p>
-          ) : (
-            rsvpNotifications.map((rsvp) => (
-              <div key={rsvp.event._id} className="mb-4">
-                <p className="text-lg font-bold">{rsvp.event.title}</p>
-                <p className="text-sm text-gray-600">Date: {new Date(rsvp.event.date).toLocaleDateString()}</p>
-                <p>Would you like to RSVP for this event?</p>
+      <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
+        <h2 className="text-xl font-bold mb-4">RSVP Notifications</h2>
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p>{error}</p>
+        ) : rsvpNotifications.length === 0 ? (
+          <p>No pending RSVPs.</p>
+        ) : (
+          rsvpNotifications.map((rsvp) => (
+            <div key={rsvp.event._id} className="mb-4">
+              <p className="text-lg font-bold">{rsvp.event.title}</p>
+              <p className="text-sm text-gray-600">Date: {new Date(rsvp.event.date).toLocaleDateString()}</p>
+              <p>Are you attending this event?</p>
+              <div className="flex space-x-4 mt-2">
                 <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded mt-2 mr-2"
-                  onClick={() => handleRsvpConfirmation(rsvp.event._id, true)}
+                  onClick={() => handleRSVP(rsvp.event._id, true)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
                 >
-                  Yes, RSVP
+                  Yes
                 </button>
                 <button
-                  className="bg-gray-500 text-white px-4 py-2 rounded mt-2"
-                  onClick={() => handleRsvpConfirmation(rsvp.event._id, false)}
+                  onClick={() => handleDecline(rsvp.event._id, false)}
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
                 >
-                  No, Cancel
+                  No
                 </button>
               </div>
-            ))
-          )}
-        </Modal>
-      )}
+            </div>
+          ))
+        )}
+      </Modal>
     </>
   );
 };

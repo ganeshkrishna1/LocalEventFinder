@@ -44,13 +44,19 @@ const EditEventForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Validate form
+  // Validate form, including date validation for past dates
   const validateForm = () => {
     let formErrors = {};
+    const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+
     if (!formData.title) formErrors.title = 'Title is required';
     if (!formData.description) formErrors.description = 'Description is required';
     if (!formData.location) formErrors.location = 'Location is required';
-    if (!formData.date) formErrors.date = 'Date is required';
+    if (!formData.date) {
+      formErrors.date = 'Date is required';
+    } else if (formData.date < currentDate) {
+      formErrors.date = 'Date cannot be in the past';
+    }
     if (!formData.price || isNaN(formData.price)) formErrors.price = 'Valid price is required';
     if (!formData.category) formErrors.category = 'Category is required';
     if (!formData.imageUrl) formErrors.imageUrl = 'Image URL is required';

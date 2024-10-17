@@ -86,7 +86,7 @@ const Navbar = () => {
             )}
 
             {/* Notification Bell Icon */}
-            {user && <NotificationBell />}
+            {user && !user.isAdmin && <NotificationBell />}
 
             {/* Show Logout if user is logged in */}
             {user ? (

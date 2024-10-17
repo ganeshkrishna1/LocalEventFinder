@@ -45,7 +45,8 @@ function EventDetail() {
         <p className="text-gray-700 mb-4"><strong>Price:</strong> ${event.price}</p>
 
         {/* Book Now Button */}
-        <div className="bottom-4 left-4 right-4">
+        {user && user.isAdmin ? (''):(
+          <div className="bottom-4 left-4 right-4">
           <button
             onClick={handleBookNow}
             className="block w-full bg-blue-700 text-white text-center py-3 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
@@ -53,6 +54,7 @@ function EventDetail() {
             Book Now
           </button>
         </div>
+        )}
       </div>
     </div>
   );

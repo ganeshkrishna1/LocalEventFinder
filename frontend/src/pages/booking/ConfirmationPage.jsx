@@ -1,10 +1,17 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const ConfirmationPage = () => {
   const location = useLocation();
   const { bookingId } = location.state || {}; // Retrieve booking ID from the state passed during navigation
   const user = JSON.parse(localStorage.getItem('user')); // Assuming user object is stored in localStorage
+
+  const navigate = useNavigate();
+
+  const handleHomeNavigation = () =>{
+    navigate('/');
+    window.location.reload();
+  }
 
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center">
@@ -21,12 +28,11 @@ const ConfirmationPage = () => {
         </div>
 
         <div className="mt-6">
-          <Link
-            to="/"
-            className="block w-full text-center bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          <p onClick={handleHomeNavigation}
+            className="block w-full text-center bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 cursor-pointer"
           >
             Return to Home
-          </Link>
+          </p>
         </div>
       </div>
     </div>
