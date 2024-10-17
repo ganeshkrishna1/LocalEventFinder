@@ -4,6 +4,8 @@ import { CiMenuFries } from 'react-icons/ci';
 import { ImCancelCircle } from 'react-icons/im';
 import { UserContext } from '../../contexts/UserContext';
 import NotificationBell from '../notification/NotificationBell';
+import logo from "../../../public/logo.png";
+
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,7 +24,7 @@ const Navbar = () => {
           {/* Logo or title */}
           <div className="flex-shrink-0">
             <NavLink to="/" className="text-xl font-bold text-gray-800" onClick={handleNavLinkClick}>
-              EventFinder
+              <img className='w-36' src={logo} alt="logo" />
             </NavLink>
           </div>
 
