@@ -4,7 +4,7 @@ import { CiMenuFries } from "react-icons/ci";
 import { ImCancelCircle } from "react-icons/im";
 import { UserContext } from "../../contexts/UserContext";
 import NotificationBell from "../notification/NotificationBell";
-import logo from "../../../public/logo.png";
+import logo from "/logo.png";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
