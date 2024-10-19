@@ -119,7 +119,7 @@ export const sendOtp = async (req, res) => {
     // Send OTP via email using the pre-configured transporter
     await transporter.sendMail({
       to: email,
-      subject: 'Your OTP Code',
+      subject: 'OTP for resetting your password.',
       text: `Your OTP is ${currentOtp}`,
     });
 
@@ -174,8 +174,8 @@ export const resendOtp = async (req, res) => {
     // Resend OTP via email
     await transporter.sendMail({
       to: email,
-      subject: 'Your New OTP Code',
-      text: `Your new OTP is ${currentOtp}`,
+      subject: 'OTP for resetting your password.',
+      text: `Your OTP is ${currentOtp}`,
     });
 
     res.json({ message: 'New OTP sent' });
