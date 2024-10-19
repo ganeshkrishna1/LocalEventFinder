@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { axiosInstance } from '../../services/BaseUrl';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../loading/Loading';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [error, setError] = useState(''); // State to hold the error message
+    const [loading, setLoading] = useState(false); // State to manage loading status
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(''); // Reset error message on new submission
+        setLoading(true); // Set loading to true before making the request
         try {
             await axiosInstance.post('/users/forgot-password', { email });
             // Navigate to OTP page
@@ -21,8 +24,15 @@ const ForgotPassword = () => {
             } else {
                 setError('Error sending OTP. Please try again later.'); // Fallback error message
             }
+        } finally {
+            setLoading(false); // Reset loading state regardless of success or failure
         }
     };
+
+    // If loading, show the loader
+    if (loading) {
+        return <Loading />;
+    }
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
