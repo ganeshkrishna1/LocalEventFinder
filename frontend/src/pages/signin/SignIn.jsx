@@ -154,6 +154,12 @@ const handleSubmit = async (e) => {
         </form>
 
         <div className="mt-4 text-center">
+        <p className="text-gray-600">
+            don't remember your password?{' '}
+            <NavLink to="/forgot-password" className="text-orange-500 font-medium hover:underline">
+              forgot password
+            </NavLink>
+          </p>
           <p className="text-gray-600">
             New user?{' '}
             <NavLink to="/signup" className="text-orange-500 font-medium hover:underline">

@@ -19,6 +19,9 @@ import AdminDashboard from './components/admindashboard/AdminDashboard';
 import SocialShare from './components/social-share/SocialShare';
 import MyWishlist from './pages/my-wishlist/MyWishlist';
 import EventStatsTable from './components/event/EventStatsTable';
+import ForgotPassword from './components/forgot-password/ForgotPassword';
+import OtpVerification from './components/forgot-password/OtpVerification';
+import UpdatePassword from './components/forgot-password/UpdatePassword';
 function App() {
   return (
     <>
@@ -40,6 +43,9 @@ function App() {
         <Route path='/analytics' element={<AdminDashboard />} />
         <Route path='/social-share' element={<SocialShare />} />
         <Route path='/my-wishlist' element={<MyWishlist />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/otp-verification/:email' element={<OtpVerification />} />
+        <Route path='/update-password/:email' element={<UpdatePassword />} />
 
 
       
