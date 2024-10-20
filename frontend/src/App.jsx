@@ -44,8 +44,8 @@ function App() {
         <Route path='/social-share' element={<SocialShare />} />
         <Route path='/my-wishlist' element={<MyWishlist />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/otp-verification/:email' element={<OtpVerification />} />
-        <Route path='/update-password/:email' element={<UpdatePassword />} />
+        <Route path='/otp-verification' element={<OtpVerification />} />
+        <Route path='/update-password' element={<UpdatePassword />} />
 
 
       

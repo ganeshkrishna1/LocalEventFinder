@@ -16,7 +16,7 @@ const ForgotPassword = () => {
         try {
             await axiosInstance.post('/users/forgot-password', { email });
             // Navigate to OTP page
-            navigate(`/otp-verification/${email}`);
+            navigate('/otp-verification',{state:{email}});
         } catch (error) {
             // Check if the error has a response and set the error message accordingly
             if (error.response && error.response.data) {

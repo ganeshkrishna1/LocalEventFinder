@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../services/BaseUrl';
 
 const OtpVerification = () => {
@@ -7,7 +7,8 @@ const OtpVerification = () => {
     const [resendEnabled, setResendEnabled] = useState(false);
     const [timer, setTimer] = useState(60); // 1-minute countdown
     const [error, setError] = useState(''); // State for error messages
-    const { email } = useParams();
+    const location = useLocation();
+    const {email} = location.state;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,7 +28,7 @@ const OtpVerification = () => {
         try {
             const response = await axiosInstance.post('/users/verify-otp', { otp });
             // Navigate to update password page if OTP is valid
-            navigate(`/update-password/${email}`); // Assuming you have a route to update the password
+            navigate(`/update-password`,{state: {email}}); // Assuming you have a route to update the password
         } catch (error) {
             // Check if the error has a response and set the error message accordingly
             if (error.response && error.response.data) {

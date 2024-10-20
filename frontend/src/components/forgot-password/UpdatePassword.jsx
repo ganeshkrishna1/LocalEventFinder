@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../services/BaseUrl';
 
 const UpdatePassword = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const { email } = useParams(); // Get email from URL
+    const  location= useLocation(); // Get email from URL
+    const { email } = location.state; 
     const navigate = useNavigate();
     const [error, setError] = useState('');
 
