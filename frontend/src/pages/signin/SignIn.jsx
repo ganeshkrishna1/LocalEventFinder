@@ -1,15 +1,12 @@
-import React, { useContext, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom'; 
-import { loginUser } from '../../services/UserService';
-import { UserContext } from '../../contexts/UserContext';
+import React, { useContext, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { loginUser } from "../../services/UserService";
+import { UserContext } from "../../contexts/UserContext";
 
 const SignIn = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
+  const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -19,61 +16,27 @@ const SignIn = () => {
 
   const validate = () => {
     const newErrors = {};
-    
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Invalid email address';
+      newErrors.email = "Invalid email address";
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters long';
-    } else if (formData.password.length > 25) {
-      newErrors.password = 'Password must be at most 25 characters long';
-    } else if (!/(?=.*[0-9])(?=.*[A-Z])(?=.*[\W_])/.test(formData.password)) {
-      newErrors.password = 'Password must contain at least one uppercase letter, one number, and one special character';
+      newErrors.password = "Password is required";
+    } else if (
+      formData.password.length < 8 ||
+      formData.password.length > 25 ||
+      !/(?=.*[0-9])(?=.*[A-Z])(?=.*[\W_])/.test(formData.password)
+    ) {
+      newErrors.password =
+        "Password must contain at least one uppercase letter, one number, and one special character";
     }
 
     return newErrors;
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const validationErrors = validate();
-
-  //   if (Object.keys(validationErrors).length === 0) {
-  //     try {
-  //       const data = await loginUser(formData);
-  //       // Storing user data in localStorage, including the isAdmin field
-  //       localStorage.setItem('user', JSON.stringify(data));
-
-  //       // Redirect based on user role
-  //       if (data.isAdmin) {
-  //         navigate('/admin-dashboard');
-  //         // window.location.reload();
-  //       } else {
-  //         navigate('/events');  // Or another user-specific route
-  //         // window.location.reload();
-  //       }
-
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-
-  //     // Reset form
-  //     setFormData({
-  //       email: '',
-  //       password: '',
-  //     });
-  //   } else {
-  //     setErrors(validationErrors);
-  //   }
-  // };
-
-  const { setUser } = useContext(UserContext); // Access setUser from UserContext
-
+  // SignIn Component
 const handleSubmit = async (e) => {
   e.preventDefault();
   const validationErrors = validate();
@@ -81,26 +44,18 @@ const handleSubmit = async (e) => {
   if (Object.keys(validationErrors).length === 0) {
     try {
       const data = await loginUser(formData);
-      
-      // Set the user in the context to trigger re-render
-      setUser(data); // <-- This triggers re-render across all components using UserContext
+      setUser(data);
+      localStorage.setItem('user', JSON.stringify(data));
 
-      localStorage.setItem('user', JSON.stringify(data)); // Optionally store user in localStorage
-      
       // Redirect based on user role
       if (data.isAdmin) {
-        navigate('/admin-dashboard');
+        navigate('/admin-dashboard'); // Admin redirect
       } else {
-        navigate('/events');
+        navigate('/events'); // Regular user redirect
       }
     } catch (err) {
-      console.log(err);
+      setErrors({ apiError: 'Invalid credentials' });
     }
-
-    setFormData({
-      email: '',
-      password: '',
-    });
   } else {
     setErrors(validationErrors);
   }
@@ -110,18 +65,23 @@ const handleSubmit = async (e) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-pink-200 via-gray-300 to-purple-300">
       <div className="max-w-md w-full p-5 border border-gray-300 rounded-md bg-purple-200 shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-5">EventFinder Sign In</h2>
+        <h2 className="text-2xl font-bold text-center mb-5">
+          EventFinder Sign In
+        </h2>
         <form onSubmit={handleSubmit}>
-
           <div className="mb-4">
-            <label htmlFor="email" className="block mb-2 text-gray-700">Email</label>
+            <label htmlFor="email" className="block mb-2 text-gray-700">
+              Email
+            </label>
             <input
               id="email"
               name="email"
-              type="email"
+              type="text"
               onChange={handleChange}
               value={formData.email}
-              className={`border ${errors.email ? 'border-red-500' : 'border-gray-300'} p-2 w-full rounded-md`}
+              className={`border ${
+                errors.email ? "border-red-500" : "border-gray-300"
+              } p-2 w-full rounded-md`}
             />
             {errors.email && (
               <div className="text-red-500 text-sm">{errors.email}</div>
@@ -129,19 +89,26 @@ const handleSubmit = async (e) => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="password" className="block mb-2 text-gray-700">Password</label>
+            <label htmlFor="password" className="block mb-2 text-gray-700">
+              Password
+            </label>
             <input
               id="password"
               name="password"
               type="password"
               onChange={handleChange}
               value={formData.password}
-              className={`border ${errors.password ? 'border-red-500' : 'border-gray-300'} p-2 w-full rounded-md`}
+              className={`border ${
+                errors.password ? "border-red-500" : "border-gray-300"
+              } p-2 w-full rounded-md`}
             />
             {errors.password && (
               <div className="text-red-500 text-sm">{errors.password}</div>
             )}
           </div>
+
+          {errors.apiError && <div className="error-message text-red-500 text-sm" data-testid="api-error">{errors.apiError}</div>}
+
 
           <div>
             <button
@@ -154,15 +121,22 @@ const handleSubmit = async (e) => {
         </form>
 
         <div className="mt-4 text-center">
-        <p className="text-gray-600">
-            don't remember your password?{' '}
-            <NavLink to="/forgot-password" className="text-orange-500 font-medium hover:underline">
+          <p className="text-gray-600">
+            don’t remember your password?{" "}
+            <NavLink
+              to="/forgot-password"
+              className="text-orange-500 font-medium hover:underline"
+            >
               forgot password
             </NavLink>
           </p>
           <p className="text-gray-600">
-            New user?{' '}
-            <NavLink to="/signup" className="text-orange-500 font-medium hover:underline">
+            Don't have an account?{" "}
+            <NavLink
+              to="/signup"
+              className="text-orange-500 font-medium hover:underline"
+              data-testid="signup-link"
+            >
               Sign Up
             </NavLink>
           </p>
