@@ -55,6 +55,9 @@ const EventCard = ({ event, onDelete }) => {
         <p className="mb-3 font-normal text-gray-800">
           <strong>Price:</strong> ${event.price}
         </p>
+        <p className="mb-3 font-normal text-gray-800">
+          <strong>Location:</strong> {event.location}
+        </p>
       </div>
       <div>
       </div>
