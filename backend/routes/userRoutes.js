@@ -1,5 +1,15 @@
 import express from 'express';
-import { registerUser, loginUser, getUsers, updateUser, deleteUser } from '../controllers/userController.js';
+import {
+  registerUser,
+  loginUser,
+  getUsers,
+  updateUser,
+  deleteUser,
+  sendOtp,
+  verifyOtp,
+  updatePassword,
+  resendOtp
+} from '../controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { admin } from '../middleware/adminMiddleware.js';
 
@@ -10,5 +20,11 @@ router.post('/login', loginUser);
 router.get('/', getUsers); 
 router.put('/:id', protect, admin, updateUser); // Admin can update a user
 router.delete('/:id', protect, admin, deleteUser); // Admin can delete a user
+
+// Forgot Password routes
+router.post('/forgot-password', sendOtp);
+router.post('/verify-otp', verifyOtp);
+router.post('/update-password', updatePassword);
+router.post('/resend-otp', resendOtp);
 
 export default router;
