@@ -135,7 +135,7 @@ export const getUserBookingsWithReviews = async (req, res) => {
   try {
     // Fetch bookings for the user
     const bookings = await Booking.find({ user: userId })
-      .populate('event', 'title date category imageUrl') // Populate event details
+      .populate('event', 'title date category imageUrl location') // Populate event details
       .lean(); // Lean to get plain JS objects
 
     // Get event IDs from bookings to fetch reviews
